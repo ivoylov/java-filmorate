@@ -10,12 +10,14 @@ public class UserController {
 
     HashSet<User> users = new HashSet<>();
 
-    public void addUser(User user) {
-        users.add(user);
+    public User addUser(User user) {
+        if (users.add(user)) return user;
+        return null;
     }
 
-    public void updateUser(User user) {
-        users.add(user);
+    public User updateUser(User user) {
+        if (users.add(user)) return user;
+        return null;
     }
 
     public HashSet<User> getAllUsers() {

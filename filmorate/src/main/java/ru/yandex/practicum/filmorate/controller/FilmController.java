@@ -10,12 +10,14 @@ public class FilmController {
 
     HashSet<Film> films = new HashSet<>();
 
-    public void addFilm(Film film) {
-        films.add(film);
+    public Film addFilm(Film film) {
+        if (films.add(film)) return film;
+        return null;
     }
 
-    public void updateFilm(Film film) {
-        films.add(film);
+    public Film updateFilm(Film film) {
+        if (films.add(film)) return film;
+        return null;
     }
 
     public HashSet<Film> getAllFilms() {
