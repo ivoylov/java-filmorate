@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -10,12 +11,12 @@ public class FilmController {
 
     HashSet<Film> films = new HashSet<>();
 
-    public Film addFilm(Film film) {
+    public Film addFilm(@RequestBody Film film) {
         if (films.add(film)) return film;
         return null;
     }
 
-    public Film updateFilm(Film film) {
+    public Film updateFilm(@RequestBody Film film) {
         if (films.add(film)) return film;
         return null;
     }
