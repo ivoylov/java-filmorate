@@ -8,11 +8,11 @@ import java.util.HashSet;
 @RestController
 public class FilmController {
 
+    HashSet<Film> films = new HashSet<>();
 
     public void addFilm(Film film) {
 
     }
-
 
     public void updateFilm(Film film) {
 

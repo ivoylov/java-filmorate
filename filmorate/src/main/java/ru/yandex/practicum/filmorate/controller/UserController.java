@@ -8,16 +8,18 @@ import java.util.HashSet;
 @RestController
 public class UserController {
 
-    public void addUser(User user) {
+    HashSet<User> users = new HashSet<>();
 
+    public void addUser(User user) {
+        users.add(user);
     }
 
     public void updateUser(User user) {
-
+        users.add(user);
     }
 
     public HashSet<User> getAllUsers() {
-        return null;
+        return new HashSet<>(users);
     }
 
 }
