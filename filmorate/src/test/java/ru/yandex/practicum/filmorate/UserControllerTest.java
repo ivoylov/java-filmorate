@@ -14,7 +14,7 @@ public class UserControllerTest {
     @Test
     void setLoginInNameIfBlankName() {
         userController.addUser(getUserWithBlankName());
-        //assertEquals(userController.get);
+        assertEquals(userController.getUserById(1).getLogin(), userController.getUserById(1).getName());
     }
 
     @Test
@@ -52,7 +52,7 @@ public class UserControllerTest {
                 .name("Имя")
                 .birthday(LocalDate.of(2000,1,1))
                 .id(1)
-                .email("yandex@")
+                .email("yandex")
                 .login("yandex")
                 .build();
     }

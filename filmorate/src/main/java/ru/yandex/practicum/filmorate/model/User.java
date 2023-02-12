@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import jakarta.validation.constraints.Email;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,3 +17,5 @@ public class User {
     LocalDate birthday;
 
 }
+
+//TODO аннотации на email, name, id
