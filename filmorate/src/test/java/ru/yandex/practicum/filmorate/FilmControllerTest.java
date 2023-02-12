@@ -10,36 +10,26 @@ import java.time.LocalDate;
 
 public class FilmControllerTest {
 
+    FilmController filmController = new FilmController();
+
     @Test
     void notValidateBlankName() {
-        assertThrows(FilmValidationException.class, () -> {
-            FilmController filmController = new FilmController();
-            filmController.addFilm(getFilmWithoutName());
-        });
+        assertThrows(FilmValidationException.class, () -> filmController.addFilm(getFilmWithoutName()));
     }
 
     @Test
     void notValidateBigDescription() {
-        assertThrows(FilmValidationException.class, () -> {
-            FilmController filmController = new FilmController();
-            filmController.addFilm(getFilmWithBigDescription());
-        });
+        assertThrows(FilmValidationException.class, () -> filmController.addFilm(getFilmWithBigDescription()));
     }
 
     @Test
     void notValidateIncorrectReleaseDate() {
-        assertThrows(FilmValidationException.class, () -> {
-            FilmController filmController = new FilmController();
-            filmController.addFilm(getFilmWithIncorrectReleaseDate());
-        });
+        assertThrows(FilmValidationException.class, () -> filmController.addFilm(getFilmWithIncorrectReleaseDate()));
     }
 
     @Test
     void notValidateZeroDuration() {
-        assertThrows(FilmValidationException.class, () -> {
-            FilmController filmController = new FilmController();
-            filmController.addFilm(getFilmWithZeroDuration());
-        });
+        assertThrows(FilmValidationException.class, () -> filmController.addFilm(getFilmWithZeroDuration()));
     }
 
     private Film getFilmWithoutName() {
