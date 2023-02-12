@@ -53,13 +53,10 @@ public class FilmControllerTest {
     }
 
     private Film getFilmWithBigDescription() {
-        StringBuilder description = new StringBuilder();
-        for (int i = 0; i <= new FilmController().getMaxLengthFilmDescription()+1; ++i) {
-            description.append("a");
-        }
+        String description = "a".repeat(Math.max(0, new FilmController().getMaxLengthFilmDescription() + 1));
         return Film.builder()
                 .name("Имя")
-                .description(description.toString())
+                .description(description)
                 .duration(Duration.ofMinutes(100))
                 .id(1)
                 .releaseDate(LocalDate.of(2023,2,12))
