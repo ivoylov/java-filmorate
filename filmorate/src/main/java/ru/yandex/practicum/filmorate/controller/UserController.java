@@ -7,44 +7,34 @@ import ru.yandex.practicum.filmorate.model.User;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.HashMap;
 
 @RestController
 public class UserController {
 
-    HashSet<User> users = new HashSet<>();
+    HashMap<Integer,User> users = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(FilmController.class);
 
     public User addUser(@RequestBody User user) {
         if (validateUser(user)) {
-            if (users.add(user)) {
-                logger.info(user + " добавлен");
-                return user;
-            }
+            return users.put(user.getId(), user);
         } else {
             logger.info(user + " не прошёл валидацию");
             throw new FilmValidationException();
         }
-        logger.info(user + " не добавлен");
-        return null;
     }
 
     public User updateUser(@RequestBody User user) {
         if (validateUser(user)) {
-            if (users.add(user)) {
-                logger.info(user + " обновлён");
-                return user;
-            }
+            return users.put(user.getId(), user);
         } else {
             logger.info(user + " не прошёл валидацию");
             throw new FilmValidationException();
         }
-        logger.info(user + " не обновлён");
-        return null;
     }
 
-    public HashSet<User> getAllUsers() {
-        return new HashSet<>(users);
+    public HashMap<Integer,User> getAllUsers() {
+        return new HashMap<>(users);
     }
 
     private boolean validateUser(User user) {
