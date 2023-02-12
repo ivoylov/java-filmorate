@@ -14,7 +14,7 @@ public class FilmController {
 
     private final HashSet<Film> films = new HashSet<>();
     private final int MAX_LENGTH_FILM_DESCRIPTION = 200;
-    private final LocalDate MINIMAL_RELEASE_DATE = LocalDate.of(1895, 112, 28);
+    private final LocalDate MINIMAL_RELEASE_DATE = LocalDate.of(1895, 12, 28);
     private static final Logger logger = LoggerFactory.getLogger(FilmController.class);
 
     @PostMapping
@@ -60,4 +60,11 @@ public class FilmController {
         return true;
     }
 
+    public int getMaxLengthFilmDescription() {
+        return MAX_LENGTH_FILM_DESCRIPTION;
+    }
+
+    public LocalDate getMinimalReleaseDate() {
+        return MINIMAL_RELEASE_DATE;
+    }
 }
