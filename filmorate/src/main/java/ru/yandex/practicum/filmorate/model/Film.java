@@ -17,3 +17,5 @@ public class Film {
     Duration duration;
 
 }
+
+//TODO аннотации на email, name, id

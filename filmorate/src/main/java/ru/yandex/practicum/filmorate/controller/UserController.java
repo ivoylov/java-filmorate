@@ -1,55 +1,63 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import java.time.LocalDate;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @RestController
+@Validated
+@RequestMapping("/users")
 public class UserController {
 
     HashMap<Integer,User> users = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(FilmController.class);
+    private int idCounter = 0;
 
-    public User addUser(@Validated @RequestBody User user) {
+    @PostMapping
+    public User addUser(@Valid @RequestBody User user) {
         if (validateUser(user)) {
-            return users.put(user.getId(), user);
+            user.setId(++idCounter);
+            users.put(idCounter, user);
+            logger.info(user + " добавлен.");
+            return user;
         } else {
             logger.info(user + " не прошёл валидацию");
             throw new UserValidationException();
         }
     }
 
-    public User updateUser(@RequestBody User user) {
-        if (validateUser(user)) {
-            return users.put(user.getId(), user);
+    @PutMapping
+    public User updateUser(@Valid @RequestBody User user) {
+        if (validateUser(user) && users.containsKey(user.getId())) {
+            users.put(user.getId(), user);
+            logger.info(user + " обновлён.");
+            return user;
         } else {
             logger.info(user + " не прошёл валидацию");
             throw new UserValidationException();
         }
     }
 
-    public HashMap<Integer,User> getAllUsers() {
-        return new HashMap<>(users);
+    @GetMapping
+    public ArrayList<User> getAllUsers() {
+        return new ArrayList<>(users.values());
     }
 
-    public User getUserById(int id) {
+    @GetMapping("{id}")
+    public User getUserById(@PathVariable("id") int id) {
         return users.get(id);
     }
 
     private boolean validateUser(User user) {
-        if (user.getEmail().isBlank() ||
-            !user.getEmail().contains("@") ||
-            user.getLogin().isBlank() ||
-            user.getLogin().contains(" ") ||
-            user.getBirthday().isAfter(LocalDate.now())
-        ) return false;
-        if (user.getName().isBlank()) user.setName(user.getLogin());
+        if (user.getLogin().contains(" ")) return false;
+        if (user.getName() == null || user.getName().isBlank()) user.setName(user.getLogin());
         return true;
     }
 

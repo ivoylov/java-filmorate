@@ -9,79 +9,56 @@ import java.time.LocalDate;
 
 public class UserControllerTest {
 
-    UserController userController = new UserController();
-
     @Test
     void setLoginInNameIfBlankName() {
+        UserController userController = new UserController();
         userController.addUser(getUserWithBlankName());
         assertEquals(userController.getUserById(1).getLogin(), userController.getUserById(1).getName());
     }
 
     @Test
-    void notValidateIncorrectEmail() {
-        assertThrows(UserValidationException.class, () -> userController.addUser(getUserWithIncorrectEmail()));
+    void setLoginInNameIfNullName() {
+        UserController userController = new UserController();
+        userController.addUser(getUserWithNullName());
+        assertEquals(userController.getUserById(1).getLogin(), userController.getUserById(1).getName());
     }
 
     @Test
-    void notValidateBlankLogin() {
-        assertThrows(UserValidationException.class, () -> userController.addUser(getUserWithBlankLogin()));
+    void getAllUsers() {
+        UserController userController = new UserController();
+        User user = getBaseUser();
+        userController.addUser(user );
+        assertEquals(userController.getUserById(1),user);
     }
 
     @Test
     void notValidateLoginContainsSpace() {
+        UserController userController = new UserController();
         assertThrows(UserValidationException.class, () -> userController.addUser(getUserWithLoginContainsSpace()));
     }
 
-    @Test
-    void notValidateIncorrectBirthdate() {
-        assertThrows(UserValidationException.class, () -> userController.addUser(getUserWithIncorrectBirthdate()));
-    }
-
     private User getUserWithBlankName() {
-        return User.builder()
-                .name("")
-                .birthday(LocalDate.of(2000,1,1))
-                .id(1)
-                .email("practicum@yandex.ru")
-                .login("yandex")
-                .build();
+        User user = getBaseUser();
+        user.setName(" ");
+        return user;
     }
 
-    private User getUserWithIncorrectEmail() {
-        return User.builder()
-                .name("Имя")
-                .birthday(LocalDate.of(2000,1,1))
-                .id(1)
-                .email("yandex")
-                .login("yandex")
-                .build();
-    }
-
-    private User getUserWithBlankLogin() {
-        return User.builder()
-                .name("Имя")
-                .birthday(LocalDate.of(2000,1,1))
-                .id(1)
-                .email("practicum@yandex.ru")
-                .login("")
-                .build();
+    private User getUserWithNullName() {
+        User user = getBaseUser();
+        user.setName(null);
+        return user;
     }
 
     private User getUserWithLoginContainsSpace() {
+        User user = getBaseUser();
+        user.setLogin("lo gin");
+        return user;
+    }
+
+    private User getBaseUser() {
         return User.builder()
                 .name("Имя")
                 .birthday(LocalDate.of(2000,1,1))
-                .id(1)
-                .email("practicum@yandex.ru")
-                .login("lo gin")
-                .build();
-    }
-
-    private User getUserWithIncorrectBirthdate() {
-        return User.builder()
-                .name("Имя")
-                .birthday(LocalDate.of(2030,1,1))
-                .id(1)
                 .email("practicum@yandex.ru")
                 .login("login")
                 .build();
