@@ -5,73 +5,47 @@ import static org.junit.jupiter.api.Assertions.*;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import java.time.Duration;
 import java.time.LocalDate;
 
 public class FilmControllerTest {
 
-    FilmController filmController = new FilmController();
-
-    @Test
-    void notValidateBlankName() {
-        assertThrows(FilmValidationException.class, () -> filmController.addFilm(getFilmWithoutName()));
-    }
-
-    @Test
-    void notValidateBigDescription() {
-        assertThrows(FilmValidationException.class, () -> filmController.addFilm(getFilmWithBigDescription()));
-    }
-
     @Test
     void notValidateIncorrectReleaseDate() {
+        FilmController filmController = new FilmController();
         assertThrows(FilmValidationException.class, () -> filmController.addFilm(getFilmWithIncorrectReleaseDate()));
     }
 
     @Test
-    void notValidateZeroDuration() {
-        assertThrows(FilmValidationException.class, () -> filmController.addFilm(getFilmWithZeroDuration()));
+    void getAllFilms() {
+        FilmController filmController = new FilmController();
+        Film film = getBaseFilm();
+        filmController.addFilm(film);
+        assertEquals(filmController.getAllFilms().get(0),film);
     }
 
-    private Film getFilmWithoutName() {
+    @Test
+    void getUserById() {
+        FilmController filmController = new FilmController();
+        Film film = getBaseFilm();
+        filmController.addFilm(film);
+        assertEquals(filmController.getFilmById(1),film);
+    }
+
+    private Film getBaseFilm() {
         return Film.builder()
-                .name("")
-                .description("описание")
-                .duration(Duration.ofMinutes(100))
                 .id(1)
-                .releaseDate(LocalDate.of(2023,2,12))
-                .build();
-    }
-
-    private Film getFilmWithBigDescription() {
-        String description = "a".repeat(Math.max(0, new FilmController().getMaxLengthFilmDescription() + 1));
-        return Film.builder()
                 .name("Имя")
-                .description(description)
-                .duration(Duration.ofMinutes(100))
-                .id(1)
+                .description("Описание")
+                .duration(100L)
                 .releaseDate(LocalDate.of(2023,2,12))
                 .build();
     }
 
     private Film getFilmWithIncorrectReleaseDate() {
-        LocalDate incorrectDate = new FilmController().getMinimalReleaseDate().minusDays(1);
-        return Film.builder()
-                .name("Имя")
-                .description("Описание")
-                .duration(Duration.ofMinutes(100))
-                .id(1)
-                .releaseDate(incorrectDate)
-                .build();
-    }
-
-    private Film getFilmWithZeroDuration() {
-        return Film.builder()
-                .name("Имя")
-                .description("Описание")
-                .duration(Duration.ofMinutes(0))
-                .id(1)
-                .releaseDate(LocalDate.of(2023,2,12))
-                .build();
+        LocalDate incorrectDate = Film.getMinimalReleaseDate().minusDays(1);
+        Film film = getBaseFilm();
+        film.setReleaseDate(incorrectDate);
+        return film;
     }
 
 }

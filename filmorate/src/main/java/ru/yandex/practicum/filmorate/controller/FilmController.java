@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -12,15 +12,17 @@ import org.slf4j.Logger;
 @RequestMapping("/films")
 public class FilmController {
 
-    private final HashMap<Integer,Film> films = new HashMap<>();
-    private final int MAX_LENGTH_FILM_DESCRIPTION = 200;
-    private final LocalDate MINIMAL_RELEASE_DATE = LocalDate.of(1895, 12, 28);
+    private final HashMap<Integer, Film> films = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(FilmController.class);
+    private int idCounter = 0;
 
     @PostMapping
     public Film addFilm(@RequestBody Film film) {
         if (validateFilm(film)) {
-            return films.put(film.getId(), film);
+            film.setId(++idCounter);
+            films.put(idCounter, film);
+            logger.info(film + " добавлен.");
+            return film;
         } else {
             logger.info(film + " не прошёл валидацию");
             throw new FilmValidationException();
@@ -29,8 +31,10 @@ public class FilmController {
 
     @PutMapping
     public Film updateFilm(@RequestBody Film film) {
-        if (validateFilm(film)) {
-            return films.put(film.getId(), film);
+        if (validateFilm(film) && films.containsKey(film.getId())) {
+            films.put(film.getId(), film);
+            logger.info(film + " обновлён.");
+            return film;
         } else {
             logger.info(film + " не прошёл валидацию");
             throw new FilmValidationException();
@@ -38,23 +42,17 @@ public class FilmController {
     }
 
     @GetMapping
-    public HashMap<Integer,Film> getAllFilms() {
-        return new HashMap<>(films);
+    public ArrayList<Film> getAllFilms() {
+        return new ArrayList<>(films.values());
+    }
+
+    @GetMapping("{id}")
+    public Film getFilmById(@PathVariable("id") int id) {
+        return films.get(id);
     }
 
     private boolean validateFilm(Film film) {
-        if (film.getName().isBlank() ||
-            film.getDescription().length() > MAX_LENGTH_FILM_DESCRIPTION ||
-            film.getReleaseDate().isBefore(MINIMAL_RELEASE_DATE) ||
-            film.getDuration().isZero()) return false;
-        return true;
+        return !film.getReleaseDate().isBefore(Film.getMinimalReleaseDate());
     }
 
-    public int getMaxLengthFilmDescription() {
-        return MAX_LENGTH_FILM_DESCRIPTION;
-    }
-
-    public LocalDate getMinimalReleaseDate() {
-        return MINIMAL_RELEASE_DATE;
-    }
 }

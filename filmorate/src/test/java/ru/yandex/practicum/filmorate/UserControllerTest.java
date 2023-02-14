@@ -27,7 +27,15 @@ public class UserControllerTest {
     void getAllUsers() {
         UserController userController = new UserController();
         User user = getBaseUser();
-        userController.addUser(user );
+        userController.addUser(user);
+        assertEquals(userController.getAllUsers().get(0),user);
+    }
+
+    @Test
+    void getUserById() {
+        UserController userController = new UserController();
+        User user = getBaseUser();
+        userController.addUser(user);
         assertEquals(userController.getUserById(1),user);
     }
 

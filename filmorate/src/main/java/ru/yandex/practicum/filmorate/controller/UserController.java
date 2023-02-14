@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.exception.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -16,7 +15,7 @@ import java.util.HashMap;
 @RequestMapping("/users")
 public class UserController {
 
-    HashMap<Integer,User> users = new HashMap<>();
+    private final HashMap<Integer,User> users = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(FilmController.class);
     private int idCounter = 0;
 
