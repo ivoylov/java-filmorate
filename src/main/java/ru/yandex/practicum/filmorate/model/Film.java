@@ -10,8 +10,8 @@ import java.time.LocalDate;
 @Builder
 public class Film {
 
-    private static final int MAX_LENGTH_FILM_DESCRIPTION = 200;
-    private static final LocalDate MINIMAL_RELEASE_DATE = LocalDate.of(1895, 12, 28);
+    public static final int MAX_LENGTH_FILM_DESCRIPTION = 200;
+    public static final LocalDate MINIMAL_RELEASE_DATE = LocalDate.of(1895, 12, 28);
 
     Integer id;
     @NotBlank(message = "Пустое имя фильма")
@@ -21,9 +21,5 @@ public class Film {
     LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма должна быть положительной")
     Long duration;
-
-    public static LocalDate getMinimalReleaseDate() {
-        return MINIMAL_RELEASE_DATE;
-    }
 
 }

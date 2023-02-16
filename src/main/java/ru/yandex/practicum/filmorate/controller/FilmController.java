@@ -57,7 +57,7 @@ public class FilmController {
     }
 
     private boolean isValid(Film film) {
-        return !film.getReleaseDate().isBefore(Film.getMinimalReleaseDate());
+        return !film.getReleaseDate().isBefore(Film.MINIMAL_RELEASE_DATE);
     }
 
 }

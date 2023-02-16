@@ -42,7 +42,7 @@ public class FilmControllerTest {
     }
 
     private Film getFilmWithIncorrectReleaseDate() {
-        LocalDate incorrectDate = Film.getMinimalReleaseDate().minusDays(1);
+        LocalDate incorrectDate = Film.MINIMAL_RELEASE_DATE.minusDays(1);
         Film film = getBaseFilm();
         film.setReleaseDate(incorrectDate);
         return film;
