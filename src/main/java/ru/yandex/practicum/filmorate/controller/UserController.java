@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import javax.validation.constraints.*;
 import javax.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,43 +20,47 @@ public class UserController {
     private int idCounter = 0;
 
     @PostMapping
-    public User addUser(@Valid @RequestBody User user) {
-        if (validateUser(user)) {
-            user.setId(++idCounter);
-            users.put(idCounter, user);
-            logger.info(user + " добавлен.");
-            return user;
-        } else {
-            logger.info(user + " не прошёл валидацию");
-            throw new UserValidationException();
+    public User add(@Valid @RequestBody User user) {
+        if (!isValid(user)) {
+        logger.info(user + " не прошёл валидацию");
+        throw new UserValidationException();
         }
+        user.setId(++idCounter);
+        users.put(idCounter, user);
+        logger.info(user + " добавлен.");
+        return user;
     }
 
     @PutMapping
-    public User updateUser(@Valid @RequestBody User user) {
-        if (validateUser(user) && users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-            logger.info(user + " обновлён.");
-            return user;
-        } else {
+    public User update(@Valid @RequestBody User user) {
+        if (!isValid(user)) {
             logger.info(user + " не прошёл валидацию");
             throw new UserValidationException();
         }
+        if (!users.containsKey(user.getId())) {
+            logger.info(user + " отсутствует в списке");
+            throw new UserValidationException();
+        }
+        users.put(user.getId(), user);
+        logger.info(user + " обновлён.");
+        return user;
     }
 
     @GetMapping
-    public ArrayList<User> getAllUsers() {
+    public ArrayList<User> getAll() {
         return new ArrayList<>(users.values());
     }
 
     @GetMapping("{id}")
-    public User getUserById(@PathVariable("id") int id) {
+    public User getById(@PathVariable("id") int id) {
         return users.get(id);
     }
 
-    private boolean validateUser(User user) {
+    private boolean isValid(User user) {
         if (user.getLogin().contains(" ")) return false;
-        if (user.getName() == null || user.getName().isBlank()) user.setName(user.getLogin());
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
         return true;
     }
 

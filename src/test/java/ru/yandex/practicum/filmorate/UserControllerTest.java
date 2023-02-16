@@ -12,37 +12,37 @@ public class UserControllerTest {
     @Test
     void setLoginInNameIfBlankName() {
         UserController userController = new UserController();
-        userController.addUser(getUserWithBlankName());
-        assertEquals(userController.getUserById(1).getLogin(), userController.getUserById(1).getName());
+        userController.add(getUserWithBlankName());
+        assertEquals(userController.getById(1).getLogin(), userController.getById(1).getName());
     }
 
     @Test
     void setLoginInNameIfNullName() {
         UserController userController = new UserController();
-        userController.addUser(getUserWithNullName());
-        assertEquals(userController.getUserById(1).getLogin(), userController.getUserById(1).getName());
+        userController.add(getUserWithNullName());
+        assertEquals(userController.getById(1).getLogin(), userController.getById(1).getName());
     }
 
     @Test
     void getAllUsers() {
         UserController userController = new UserController();
         User user = getBaseUser();
-        userController.addUser(user);
-        assertEquals(userController.getAllUsers().get(0),user);
+        userController.add(user);
+        assertEquals(userController.getAll().get(0),user);
     }
 
     @Test
     void getUserById() {
         UserController userController = new UserController();
         User user = getBaseUser();
-        userController.addUser(user);
-        assertEquals(userController.getUserById(1),user);
+        userController.add(user);
+        assertEquals(userController.getById(1),user);
     }
 
     @Test
     void notValidateLoginContainsSpace() {
         UserController userController = new UserController();
-        assertThrows(UserValidationException.class, () -> userController.addUser(getUserWithLoginContainsSpace()));
+        assertThrows(UserValidationException.class, () -> userController.add(getUserWithLoginContainsSpace()));
     }
 
     private User getUserWithBlankName() {
