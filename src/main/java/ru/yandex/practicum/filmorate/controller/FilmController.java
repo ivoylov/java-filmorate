@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import javax.validation.constraints.*;
 import javax.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,41 +20,43 @@ public class FilmController {
     private int idCounter = 0;
 
     @PostMapping
-    public Film addFilm(@Valid @RequestBody Film film) {
-        if (validateFilm(film)) {
-            film.setId(++idCounter);
-            films.put(idCounter, film);
-            logger.info(film + " добавлен.");
-            return film;
-        } else {
+    public Film add(@Valid @RequestBody Film film) {
+        if (!isValid(film)) {
             logger.info(film + " не прошёл валидацию");
             throw new FilmValidationException();
         }
+        film.setId(++idCounter);
+        films.put(idCounter, film);
+        logger.info(film + " добавлен.");
+        return film;
     }
 
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film) {
-        if (validateFilm(film) && films.containsKey(film.getId())) {
-            films.put(film.getId(), film);
-            logger.info(film + " обновлён.");
-            return film;
-        } else {
+    public Film update(@Valid @RequestBody Film film) {
+        if (!isValid(film)) {
             logger.info(film + " не прошёл валидацию");
             throw new FilmValidationException();
         }
+        if (!films.containsKey(film.getId())) {
+            logger.info(film + " отсутствует в списке");
+            throw new FilmValidationException();
+        }
+        films.put(film.getId(), film);
+        logger.info(film + " обновлён.");
+        return film;
     }
 
     @GetMapping
-    public ArrayList<Film> getAllFilms() {
+    public ArrayList<Film> getAll() {
         return new ArrayList<>(films.values());
     }
 
     @GetMapping("{id}")
-    public Film getFilmById(@PathVariable("id") int id) {
+    public Film getById(@PathVariable("id") int id) {
         return films.get(id);
     }
 
-    private boolean validateFilm(Film film) {
+    private boolean isValid(Film film) {
         return !film.getReleaseDate().isBefore(Film.getMinimalReleaseDate());
     }
 

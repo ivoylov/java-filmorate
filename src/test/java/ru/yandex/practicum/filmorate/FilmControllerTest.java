@@ -12,23 +12,23 @@ public class FilmControllerTest {
     @Test
     void notValidateIncorrectReleaseDate() {
         FilmController filmController = new FilmController();
-        assertThrows(FilmValidationException.class, () -> filmController.addFilm(getFilmWithIncorrectReleaseDate()));
+        assertThrows(FilmValidationException.class, () -> filmController.add(getFilmWithIncorrectReleaseDate()));
     }
 
     @Test
     void getAllFilms() {
         FilmController filmController = new FilmController();
         Film film = getBaseFilm();
-        filmController.addFilm(film);
-        assertEquals(filmController.getAllFilms().get(0),film);
+        filmController.add(film);
+        assertEquals(filmController.getAll().get(0),film);
     }
 
     @Test
     void getUserById() {
         FilmController filmController = new FilmController();
         Film film = getBaseFilm();
-        filmController.addFilm(film);
-        assertEquals(filmController.getFilmById(1),film);
+        filmController.add(film);
+        assertEquals(filmController.getById(1),film);
     }
 
     private Film getBaseFilm() {
