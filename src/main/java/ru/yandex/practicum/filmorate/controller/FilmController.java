@@ -1,63 +1,52 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import java.util.ArrayList;
-import java.util.HashMap;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 @RestController
 @Validated
 @RequestMapping("/films")
 public class FilmController {
 
-    private final HashMap<Integer, Film> films = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(FilmController.class);
-    private int idCounter = 0;
+    FilmService filmService;
+    FilmStorage filmStorage;
+
+    @Autowired
+    public FilmController (FilmService filmService) {
+        this.filmService = filmService;
+    }
 
     @PostMapping
     public Film add(@Valid @RequestBody Film film) {
-        if (!isValid(film)) {
-            logger.info(film + " не прошёл валидацию");
-            throw new FilmValidationException();
-        }
-        film.setId(++idCounter);
-        films.put(idCounter, film);
-        logger.info(film + " добавлен.");
+        filmService.add(film);
         return film;
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
-        if (!isValid(film)) {
-            logger.info(film + " не прошёл валидацию");
-            throw new FilmValidationException();
-        }
-        if (!films.containsKey(film.getId())) {
-            logger.info(film + " отсутствует в списке");
-            throw new FilmValidationException();
-        }
-        films.put(film.getId(), film);
-        logger.info(film + " обновлён.");
+        filmService.update(film);
         return film;
     }
 
     @GetMapping
     public ArrayList<Film> getAll() {
-        return new ArrayList<>(films.values());
+        return new ArrayList<>(filmService.getAll());
     }
 
     @GetMapping("{id}")
     public Film getById(@PathVariable("id") int id) {
-        return films.get(id);
+        return filmService.getById(id);
     }
 
-    private boolean isValid(Film film) {
-        return !film.getReleaseDate().isBefore(Film.MINIMAL_RELEASE_DATE);
-    }
 
 }
