@@ -2,9 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 @Service
 public class FilmService {
 
-    private static final Logger logger = LoggerFactory.getLogger(FilmController.class);
+    private static final Logger logger = LoggerFactory.getLogger(FilmService.class);
     FilmStorage filmStorage;
 
     @Autowired
