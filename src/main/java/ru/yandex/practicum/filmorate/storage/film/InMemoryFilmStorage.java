@@ -11,10 +11,10 @@ import org.slf4j.Logger;
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
 
-    private final HashMap<Integer, Film> films = new HashMap<>();
+    private final HashMap<Long, Film> films = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(InMemoryFilmStorage.class);
 
-    private int idCounter = 0;
+    private long idCounter = 0;
 
     @Override
     public void add(Film film) {
@@ -34,7 +34,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public boolean isExist(int filmId) {
+    public boolean isExist(long filmId) {
         return films.containsKey(filmId);
     }
 
@@ -44,7 +44,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film getById(int id) {
+    public Film getById(long id) {
         return films.get(id);
     }
 }
