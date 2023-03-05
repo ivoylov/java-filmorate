@@ -16,14 +16,14 @@ public class UserControllerTest {
     void setLoginInNameIfBlankName() {
         UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
         userController.add(getUserWithBlankName());
-        assertEquals(userController.getById(1).getLogin(), userController.getById(1).getName());
+        assertEquals(userController.getById(1L).getLogin(), userController.getById(1L).getName());
     }
 
     @Test
     void setLoginInNameIfNullName() {
         UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
         userController.add(getUserWithNullName());
-        assertEquals(userController.getById(1).getLogin(), userController.getById(1).getName());
+        assertEquals(userController.getById(1L).getLogin(), userController.getById(1L).getName());
     }
 
     @Test
@@ -39,7 +39,7 @@ public class UserControllerTest {
         UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
         User user = getBaseUser();
         userController.add(user);
-        assertEquals(userController.getById(1),user);
+        assertEquals(userController.getById(1L),user);
     }
 
     @Test

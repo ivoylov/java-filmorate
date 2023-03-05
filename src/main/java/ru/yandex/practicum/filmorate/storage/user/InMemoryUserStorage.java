@@ -27,7 +27,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public boolean isExist(long userId) {
+    public boolean isExist(Long userId) {
         return users.containsKey(userId);
     }
 
@@ -35,7 +35,7 @@ public class InMemoryUserStorage implements UserStorage {
         return new ArrayList<>(users.values());
     }
 
-    public User getById(long id) {
+    public User getById(Long id) {
         return users.get(id);
     }
 

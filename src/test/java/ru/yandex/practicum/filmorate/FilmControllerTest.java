@@ -36,7 +36,7 @@ public class FilmControllerTest {
 
     private Film getBaseFilm() {
         return Film.builder()
-                .id(1)
+                .id(1L)
                 .name("Имя")
                 .description("Описание")
                 .duration(100L)

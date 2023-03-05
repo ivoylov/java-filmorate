@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class UserService {
         return userStorage.getAll();
     }
 
-    public User getById(int id) {
+    public User getById(Long id) {
         return userStorage.getById(id);
     }
 
@@ -71,6 +70,9 @@ public class UserService {
         if (user.getLogin().contains(" ")) return false;
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
+        }
+        if (!user.isFriendsExist()) {
+            user.setFriends();
         }
         return true;
     }

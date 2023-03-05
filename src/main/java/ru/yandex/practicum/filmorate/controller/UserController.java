@@ -37,8 +37,15 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    public User getById(@PathVariable("id") int id) {
+    public User getById(@PathVariable("id") Long id) {
         return userService.getById(id);
     }
+
+/*
+    PUT /users/{id}/friends/{friendId}  — добавление в друзья.
+            DELETE /users/{id}/friends/{friendId} — удаление из друзей.
+            GET /users/{id}/friends — возвращаем список пользователей, являющихся его друзьями.
+            GET /users/{id}/friends/common/{otherId} — список друзей, общих с другим пользователем.
+*/
 
 }
