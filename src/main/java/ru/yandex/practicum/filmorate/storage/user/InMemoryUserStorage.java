@@ -11,8 +11,8 @@ import java.util.HashMap;
 public class InMemoryUserStorage implements UserStorage {
 
     private static final Logger logger = LoggerFactory.getLogger(InMemoryUserStorage.class);
-    private final HashMap<Integer, User> users = new HashMap<>();
-    private int idCounter = 0;
+    private final HashMap<Long, User> users = new HashMap<>();
+    private long idCounter = 0;
 
     @Override
     public void add(User user) {
@@ -27,7 +27,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public boolean isExist(int userId) {
+    public boolean isExist(long userId) {
         return users.containsKey(userId);
     }
 
@@ -35,7 +35,7 @@ public class InMemoryUserStorage implements UserStorage {
         return new ArrayList<>(users.values());
     }
 
-    public User getById(int id) {
+    public User getById(long id) {
         return users.get(id);
     }
 

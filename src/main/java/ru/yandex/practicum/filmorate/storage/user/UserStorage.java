@@ -10,8 +10,8 @@ public interface UserStorage {
 
     void add(User user);
     void update(User user);
-    boolean isExist (int userId);
+    boolean isExist (long userId);
     ArrayList<User> getAll();
-    public User getById(int id);
+    public User getById(long id);
 
 }

@@ -4,18 +4,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-    private UserStorage userStorage;
+    private final UserStorage userStorage;
 
     @Autowired
     public UserService (UserStorage userStorage) {
@@ -48,6 +48,23 @@ public class UserService {
 
     public User getById(int id) {
         return userStorage.getById(id);
+    }
+
+    public void addFriend(User user, User friend) {
+        user.addFriend(friend.getId());
+    }
+
+    public void deleteFriend(User user, User friend) {
+        user.deleteFriend(friend.getId());
+    }
+
+    public List<User> getAllFriend(User user) {
+        List<Long> friendsId = user.getAllFriends();
+        ArrayList<User> friends = new ArrayList<>();
+        for (Long friendId : friendsId) {
+            friends.add(userStorage.getById(friendId));
+        }
+        return friends;
     }
 
     private boolean isValid(User user) {
