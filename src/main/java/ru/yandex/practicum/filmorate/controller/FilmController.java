@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import java.util.ArrayList;
+import java.util.List;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 @RestController
@@ -42,11 +43,19 @@ public class FilmController {
         return filmService.getById(id);
     }
 
-    /*
-    PUT /films/{id}/like/{userId}  — пользователь ставит лайк фильму.
-DELETE /films/{id}/like/{userId}  — пользователь удаляет лайк.
-GET /films/popular?count={count} — возвращает список из первых count фильмов по количеству лайков. Если значение параметра count не задано, верните первые 10.
-     */
+    @PutMapping("/films/{id}/like/{userId}")
+    public void addLike(@PathVariable long id, @PathVariable long userId) {
+        filmService.getById(id).addLike(userId);
+    }
 
+    @DeleteMapping("/films/{id}/like/{userId}")
+    public void deleteLike(@PathVariable long id, @PathVariable long userId) {
+        filmService.getById(id).deleteLike(userId);
+    }
+
+    @GetMapping("/films/popular?count={count}")
+    public List<Film> getPopularFilm(@RequestParam(defaultValue = "10") String count) {
+        return filmService.getTopFilms(Integer.parseInt(count));
+    }
 
 }

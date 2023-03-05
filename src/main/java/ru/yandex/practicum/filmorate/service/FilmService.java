@@ -51,7 +51,7 @@ public class FilmService {
         return new ArrayList<>(filmStorage.getAll());
     }
 
-    public Film getById(int id) {
+    public Film getById(long id) {
         return filmStorage.getById(id);
     }
 
