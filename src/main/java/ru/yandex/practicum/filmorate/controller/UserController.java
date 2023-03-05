@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @Validated
@@ -41,11 +42,24 @@ public class UserController {
         return userService.getById(id);
     }
 
-/*
-    PUT /users/{id}/friends/{friendId}  — добавление в друзья.
-            DELETE /users/{id}/friends/{friendId} — удаление из друзей.
-            GET /users/{id}/friends — возвращаем список пользователей, являющихся его друзьями.
-            GET /users/{id}/friends/common/{otherId} — список друзей, общих с другим пользователем.
-*/
+    @GetMapping("/users/{id}/friends")
+    public List<User> getAllFriends(@PathVariable Long id) {
+        return userService.getAllFriend(userService.getById(id));
+    }
+
+    @DeleteMapping("/users/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable long id, @PathVariable long friendId) {
+        userService.getById(id).deleteFriend(friendId);
+    }
+
+    @PutMapping("/users/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable long id, @PathVariable long friendId) {
+        userService.getById(id).addFriend(friendId);
+    }
+
+    @GetMapping("GET /users/{id}/friends/common/{otherId}")
+    public List<Long> getCommonFriends (@PathVariable long id, @PathVariable long otherId) {
+        return userService.getCommonFriends(userService.getById(id), userService.getById(otherId));
+    }
 
 }
