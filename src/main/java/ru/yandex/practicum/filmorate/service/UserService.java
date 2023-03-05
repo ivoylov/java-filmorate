@@ -70,7 +70,7 @@ public class UserService {
     public List<Long> getCommonFriends(User user, User friend) {
         List<Long> userFriends = user.getAllFriends();
         List<Long> friendFriends = user.getAllFriends();
-        return userFriends.stream().filter(x -> friendFriends.contains(x)).collect(Collectors.toList());
+        return userFriends.stream().filter(friendFriends::contains).collect(Collectors.toList());
     }
 
     private boolean isValid(User user) {
