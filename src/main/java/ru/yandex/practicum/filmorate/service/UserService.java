@@ -70,11 +70,11 @@ public class UserService {
 
     public List<Long> getCommonFriends(User user, User friend) {
         List<Long> userFriends = user.getAllFriends();
-        List<Long> friendFriends = user.getAllFriends();
+        List<Long> friendFriends = friend.getAllFriends();
         return userFriends.stream().filter(friendFriends::contains).collect(Collectors.toList());
     }
 
-    private boolean isValid(User user) {
+    public boolean isValid(User user) {
         if (user.getLogin().contains(" ")) return false;
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
