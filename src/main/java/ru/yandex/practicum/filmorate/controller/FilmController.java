@@ -5,10 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.FilmUnknownException;
+import ru.yandex.practicum.filmorate.exception.FilmValidationException;
+import ru.yandex.practicum.filmorate.exception.UserUnknownException;
 import ru.yandex.practicum.filmorate.model.Film;
 import java.util.ArrayList;
 import java.util.List;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 @RestController
 @Validated
@@ -16,14 +19,17 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 public class FilmController {
 
     FilmService filmService;
+    UserService userService;
 
     @Autowired
-    public FilmController (FilmService filmService) {
+    public FilmController (FilmService filmService, UserService userService) {
         this.filmService = filmService;
+        this.userService = userService;
     }
 
     @PostMapping
     public Film add(@Valid @RequestBody Film film) {
+        if (!filmService.isValid(film)) throw new FilmValidationException();
         filmService.add(film);
         return film;
     }
@@ -48,11 +54,15 @@ public class FilmController {
 
     @PutMapping("/films/{id}/like/{userId}")
     public void addLike(@PathVariable long id, @PathVariable long userId) {
+        if (!filmService.isExist(id)) throw new FilmUnknownException();
+        if (!userService.isExist(userId)) throw new UserUnknownException();
         filmService.getById(id).addLike(userId);
     }
 
     @DeleteMapping("/films/{id}/like/{userId}")
     public void deleteLike(@PathVariable long id, @PathVariable long userId) {
+        if (!filmService.isExist(id)) throw new FilmUnknownException();
+        if (!userService.isExist(userId)) throw new UserUnknownException();
         filmService.getById(id).deleteLike(userId);
     }
 
