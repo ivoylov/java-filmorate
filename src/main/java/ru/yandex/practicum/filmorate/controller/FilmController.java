@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.exception.FilmValidationException;
 import ru.yandex.practicum.filmorate.exception.UserUnknownException;
 import ru.yandex.practicum.filmorate.model.Film;
 import java.util.ArrayList;
-import java.util.List;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -47,28 +46,28 @@ public class FilmController {
     }
 
     @GetMapping("{id}")
-    public Film getById(@PathVariable("id") int id) {
+    public Film getById(@PathVariable int id) {
         if (!filmService.isExist(id)) throw new FilmUnknownException();
         return filmService.getById(id);
     }
 
-    @PutMapping("/films/{id}/like/{userId}")
+    @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable long id, @PathVariable long userId) {
         if (!filmService.isExist(id)) throw new FilmUnknownException();
         if (!userService.isExist(userId)) throw new UserUnknownException();
         filmService.getById(id).addLike(userId);
     }
 
-    @DeleteMapping("/films/{id}/like/{userId}")
+    @DeleteMapping("/{id}/like/{userId}")
     public void deleteLike(@PathVariable long id, @PathVariable long userId) {
         if (!filmService.isExist(id)) throw new FilmUnknownException();
         if (!userService.isExist(userId)) throw new UserUnknownException();
         filmService.getById(id).deleteLike(userId);
     }
 
-    @GetMapping("/films/popular?count={count}")
-    public List<Film> getPopularFilm(@RequestParam(defaultValue = "10") String count) {
-        return filmService.getTopFilms(Integer.parseInt(count));
+    @GetMapping("/popular")
+    public ArrayList<Film> getPopularFilm(@RequestParam(value = "count", required = false, defaultValue = "10") String count) {
+        return new ArrayList<>(filmService.getTopFilms(Integer.parseInt(count)));
     }
 
 }

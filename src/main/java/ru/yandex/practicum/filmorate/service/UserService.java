@@ -29,6 +29,7 @@ public class UserService {
             throw new UserValidationException();
         }
         userStorage.add(user);
+        logger.info(user + " добавлен");
     }
 
     public void update(User user) {
@@ -41,6 +42,7 @@ public class UserService {
             throw new UserUnknownException();
         }
         userStorage.update(user);
+        logger.info(user + " обновлён");
     }
 
     public ArrayList<User> getAll() {
@@ -49,14 +51,6 @@ public class UserService {
 
     public User getById(Long id) {
         return userStorage.getById(id);
-    }
-
-    public void addFriend(User user, User friend) {
-        user.addFriend(friend.getId());
-    }
-
-    public void deleteFriend(User user, User friend) {
-        user.deleteFriend(friend.getId());
     }
 
     public List<User> getAllFriend(User user) {
