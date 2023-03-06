@@ -74,6 +74,10 @@ public class UserService {
         return userFriends.stream().filter(friendFriends::contains).collect(Collectors.toList());
     }
 
+    public boolean isExist(long id) {
+        return userStorage.isExist(id);
+    }
+
     public boolean isValid(User user) {
         if (user.getLogin().contains(" ")) return false;
         if (user.getName() == null || user.getName().isBlank()) {
