@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import javax.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.UserUnknownException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 import java.util.ArrayList;
@@ -38,7 +39,9 @@ public class UserController {
 
     @GetMapping("{id}")
     public User getById(@PathVariable("id") Long id) {
-        return userService.getById(id);
+        User user = userService.getById(id);
+        if (user == null) throw new UserUnknownException();
+        return user;
     }
 
     @GetMapping("/users/{id}/friends")

@@ -74,6 +74,10 @@ public class FilmService {
         return !film.getReleaseDate().isBefore(Film.MINIMAL_RELEASE_DATE);
     }
 
+    public boolean isExist(long id) {
+        return filmStorage.isExist(id);
+    }
+
     private List<Film> sortedFilmsByLikesQuantity() {
         return filmStorage.getAll()
                 .stream()

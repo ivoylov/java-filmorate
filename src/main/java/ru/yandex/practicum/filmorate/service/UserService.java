@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.UserUnknownException;
 import ru.yandex.practicum.filmorate.exception.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -37,7 +38,7 @@ public class UserService {
         }
         if (!userStorage.isExist(user.getId())) {
             logger.info(user + " отсутствует в списке");
-            throw new UserValidationException();
+            throw new UserUnknownException();
         }
         userStorage.update(user);
     }

@@ -4,6 +4,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.FilmUnknownException;
 import ru.yandex.practicum.filmorate.model.Film;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class FilmController {
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
+        if (!filmService.isExist(film.getId())) throw new FilmUnknownException();
         filmService.update(film);
         return film;
     }
@@ -40,6 +42,7 @@ public class FilmController {
 
     @GetMapping("{id}")
     public Film getById(@PathVariable("id") int id) {
+        if (!filmService.isExist(id)) throw new FilmUnknownException();
         return filmService.getById(id);
     }
 
