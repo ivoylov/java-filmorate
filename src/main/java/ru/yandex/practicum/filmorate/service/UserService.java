@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exception.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,8 @@ public class UserService {
             throw new UserValidationException();
         }
         userStorage.add(user);
-        logger.info(user + " добавлен");
+        logger.info(user.toString());
+        logger.info("добавлен");
     }
 
     public void update(User user) {
@@ -41,8 +43,11 @@ public class UserService {
             logger.info(user + " отсутствует в списке");
             throw new UserUnknownException();
         }
+        logger.info(userStorage.getById(user.getId()).toString());
+        logger.info("запрос на обновление");
         userStorage.update(user);
-        logger.info(user + " обновлён");
+        logger.info(user.toString());
+        logger.info("обновлён");
     }
 
     public ArrayList<User> getAll() {
@@ -53,8 +58,8 @@ public class UserService {
         return userStorage.getById(id);
     }
 
-    public List<User> getAllFriend(long id) {
-        List<Long> friendsId = userStorage.getById(id).getAllFriends();
+    public ArrayList<User> getAllFriend(long id) {
+        HashSet<Long> friendsId = userStorage.getById(id).getAllFriends();
         ArrayList<User> friends = new ArrayList<>();
         for (Long friendId : friendsId) {
             friends.add(userStorage.getById(friendId));
@@ -62,10 +67,10 @@ public class UserService {
         return friends;
     }
 
-    public List<Long> getCommonFriends(long id, long otherId) {
-        List<Long> userFriends = userStorage.getById(id).getAllFriends();
-        List<Long> otherUserFriends = userStorage.getById(otherId).getAllFriends();
-        return userFriends.stream().filter(otherUserFriends::contains).collect(Collectors.toList());
+    public List<User> getCommonFriends(long id, long otherId) {
+        ArrayList<User> userFriends = getAllFriend(id);
+        ArrayList<User> otherUserFriends = getAllFriend(otherId);
+        return userFriends.stream().filter(u -> otherUserFriends.contains(u)).collect(Collectors.toList());
     }
 
     public boolean isExist(long id) {
@@ -85,9 +90,16 @@ public class UserService {
 
     public void deleteFriend(long id, long friendId) {
         userStorage.getById(id).deleteFriend(friendId);
+        userStorage.getById(friendId).deleteFriend(id);
+        logger.info("User " + userStorage.getById(id).getName() +
+                " не дружит с user " + userStorage.getById(friendId).getName());
     }
 
     public void addFriend(long id, long friendId) {
         userStorage.getById(id).addFriend(friendId);
+        userStorage.getById(friendId).addFriend(id);
+        logger.info("User " + userStorage.getById(id).getName() +
+                " дружит с user " + userStorage.getById(friendId).getName());
     }
+
 }

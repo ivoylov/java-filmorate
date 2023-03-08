@@ -3,9 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import javax.validation.constraints.*;
 import lombok.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 @Data
 @Builder
@@ -37,8 +35,8 @@ public class User {
         friends = new HashSet<>();
     }
 
-    public List<Long> getAllFriends() {
-        return new ArrayList<>(friends);
+    public HashSet<Long> getAllFriends() {
+        return new HashSet<>(friends);
     }
 
 }

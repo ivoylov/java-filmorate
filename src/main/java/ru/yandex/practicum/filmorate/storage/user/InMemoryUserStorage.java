@@ -18,7 +18,6 @@ public class InMemoryUserStorage implements UserStorage {
     public void add(User user) {
         user.setId(++idCounter);
         users.put(idCounter, user);
-        logger.info(user + " добавлен.");
     }
 
     @Override
