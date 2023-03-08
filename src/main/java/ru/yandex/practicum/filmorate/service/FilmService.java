@@ -56,7 +56,7 @@ public class FilmService {
 
     public void addLike(long filmId, long userId) {
         filmStorage.getById(filmId).addLike(userId);
-        logger.info(filmId + "поставлен like от user " + userId);
+        logger.info("Фильм " + filmId + " поставлен like от user " + userId);
     }
 
     public void deleteLike(long filmId, long userId) {

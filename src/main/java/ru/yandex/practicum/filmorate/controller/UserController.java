@@ -49,25 +49,25 @@ public class UserController {
     @GetMapping("/{id}/friends")
     public List<User> getAllFriends(@PathVariable Long id) {
         if (!userService.isExist(id)) throw new UserUnknownException();
-        return userService.getAllFriend(userService.getById(id));
+        return userService.getAllFriend(id);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public void deleteFriend(@PathVariable long id, @PathVariable long friendId) {
         if (!userService.isExist(id) || !userService.isExist(friendId)) throw new UserUnknownException();
-        userService.getById(id).deleteFriend(friendId);
+        userService.deleteFriend(id, friendId);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriend(@PathVariable long id, @PathVariable long friendId) {
         if (!userService.isExist(id) || !userService.isExist(friendId)) throw new UserUnknownException();
-        userService.getById(id).addFriend(friendId);
+        userService.addFriend(id, friendId);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public List<Long> getCommonFriends (@PathVariable long id, @PathVariable long otherId) {
         if (!userService.isExist(id) || !userService.isExist(otherId)) throw new UserUnknownException();
-        return userService.getCommonFriends(userService.getById(id), userService.getById(otherId));
+        return userService.getCommonFriends(id, otherId);
     }
 
 }

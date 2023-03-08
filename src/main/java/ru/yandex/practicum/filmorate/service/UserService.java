@@ -53,8 +53,8 @@ public class UserService {
         return userStorage.getById(id);
     }
 
-    public List<User> getAllFriend(User user) {
-        List<Long> friendsId = user.getAllFriends();
+    public List<User> getAllFriend(long id) {
+        List<Long> friendsId = userStorage.getById(id).getAllFriends();
         ArrayList<User> friends = new ArrayList<>();
         for (Long friendId : friendsId) {
             friends.add(userStorage.getById(friendId));
@@ -62,10 +62,10 @@ public class UserService {
         return friends;
     }
 
-    public List<Long> getCommonFriends(User user, User friend) {
-        List<Long> userFriends = user.getAllFriends();
-        List<Long> friendFriends = friend.getAllFriends();
-        return userFriends.stream().filter(friendFriends::contains).collect(Collectors.toList());
+    public List<Long> getCommonFriends(long id, long otherId) {
+        List<Long> userFriends = userStorage.getById(id).getAllFriends();
+        List<Long> otherUserFriends = userStorage.getById(otherId).getAllFriends();
+        return userFriends.stream().filter(otherUserFriends::contains).collect(Collectors.toList());
     }
 
     public boolean isExist(long id) {
@@ -83,4 +83,11 @@ public class UserService {
         return true;
     }
 
+    public void deleteFriend(long id, long friendId) {
+        userStorage.getById(id).deleteFriend(friendId);
+    }
+
+    public void addFriend(long id, long friendId) {
+        userStorage.getById(id).addFriend(friendId);
+    }
 }
