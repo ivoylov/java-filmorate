@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exception.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -55,22 +54,26 @@ public class FilmService {
         return filmStorage.getById(id);
     }
 
-    public void addLike(Film film, User user) {
-        film.addLike(user.getId());
+    public void addLike(long filmId, long userId) {
+        filmStorage.getById(filmId).addLike(userId);
+        logger.info(filmId + "поставлен like от user " + userId);
     }
 
-    public void deleteLike(Film film, User user) {
-        film.deleteLike(user.getId());
+    public void deleteLike(long filmId, long userId) {
+        filmStorage.getById(filmId).deleteLike(userId);
     }
 
     public List<Film> getTopFilms(long top) {
         return sortedFilmsByLikesQuantity()
                 .stream()
-                .skip(top)
+                .limit(top)
                 .collect(Collectors.toList());
     }
 
     public boolean isValid(Film film) {
+        if (!film.isLikesExist()) {
+            film.setLikes();
+        }
         return !film.getReleaseDate().isBefore(Film.MINIMAL_RELEASE_DATE);
     }
 
@@ -81,7 +84,7 @@ public class FilmService {
     private List<Film> sortedFilmsByLikesQuantity() {
         return filmStorage.getAll()
                 .stream()
-                .sorted(Comparator.comparingLong(f0 -> f0.getLikes().size()))
+                .sorted(Comparator.comparingLong(f0 -> f0.getLikes().size()*-1))
                 .collect(Collectors.toList());
     }
 

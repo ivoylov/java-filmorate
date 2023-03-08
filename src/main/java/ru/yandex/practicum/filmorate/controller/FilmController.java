@@ -55,14 +55,14 @@ public class FilmController {
     public void addLike(@PathVariable long id, @PathVariable long userId) {
         if (!filmService.isExist(id)) throw new FilmUnknownException();
         if (!userService.isExist(userId)) throw new UserUnknownException();
-        filmService.getById(id).addLike(userId);
+        filmService.addLike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void deleteLike(@PathVariable long id, @PathVariable long userId) {
         if (!filmService.isExist(id)) throw new FilmUnknownException();
         if (!userService.isExist(userId)) throw new UserUnknownException();
-        filmService.getById(id).deleteLike(userId);
+        filmService.deleteLike(id, userId);
     }
 
     @GetMapping("/popular")
