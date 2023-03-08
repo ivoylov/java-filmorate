@@ -70,7 +70,7 @@ public class UserService {
     public List<User> getCommonFriends(long id, long otherId) {
         ArrayList<User> userFriends = getAllFriend(id);
         ArrayList<User> otherUserFriends = getAllFriend(otherId);
-        return userFriends.stream().filter(u -> otherUserFriends.contains(u)).collect(Collectors.toList());
+        return userFriends.stream().filter(otherUserFriends::contains).collect(Collectors.toList());
     }
 
     public boolean isExist(long id) {

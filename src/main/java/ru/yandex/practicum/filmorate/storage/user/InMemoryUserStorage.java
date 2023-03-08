@@ -10,7 +10,6 @@ import java.util.HashMap;
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
-    private static final Logger logger = LoggerFactory.getLogger(InMemoryUserStorage.class);
     private final HashMap<Long, User> users = new HashMap<>();
     private long idCounter = 0;
 
