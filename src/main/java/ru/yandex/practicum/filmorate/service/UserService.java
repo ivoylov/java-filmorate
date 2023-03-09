@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserUnknownException;
 import ru.yandex.practicum.filmorate.exception.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-    private final UserStorage userStorage;
+    private final InMemoryUserStorage userStorage;
 
     @Autowired
-    public UserService (UserStorage userStorage) {
+    public UserService (InMemoryUserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
@@ -29,7 +29,7 @@ public class UserService {
             logger.info(user + " не прошёл валидацию");
             throw new UserValidationException();
         }
-        userStorage.add(user);
+        userStorage.create(user);
         logger.info(user.toString());
         logger.info("добавлен");
     }
@@ -43,7 +43,7 @@ public class UserService {
             logger.info(user + " отсутствует в списке");
             throw new UserUnknownException();
         }
-        logger.info(userStorage.getById(user.getId()).toString());
+        logger.info(userStorage.find(user.getId()).toString());
         logger.info("запрос на обновление");
         userStorage.update(user);
         logger.info(user.toString());
@@ -51,18 +51,18 @@ public class UserService {
     }
 
     public ArrayList<User> getAll() {
-        return userStorage.getAll();
+        return userStorage.findAll();
     }
 
     public User getById(Long id) {
-        return userStorage.getById(id);
+        return userStorage.find(id);
     }
 
     public ArrayList<User> getAllFriend(long id) {
-        HashSet<Long> friendsId = userStorage.getById(id).getAllFriends();
+        HashSet<Long> friendsId = userStorage.find(id).getAllFriends();
         ArrayList<User> friends = new ArrayList<>();
         for (Long friendId : friendsId) {
-            friends.add(userStorage.getById(friendId));
+            friends.add(userStorage.find(friendId));
         }
         return friends;
     }
@@ -86,17 +86,17 @@ public class UserService {
     }
 
     public void deleteFriend(long id, long friendId) {
-        userStorage.getById(id).deleteFriend(friendId);
-        userStorage.getById(friendId).deleteFriend(id);
-        logger.info("User " + userStorage.getById(id).getName() +
-                " не дружит с user " + userStorage.getById(friendId).getName());
+        userStorage.find(id).deleteFriend(friendId);
+        userStorage.find(friendId).deleteFriend(id);
+        logger.info("User " + userStorage.find(id).getName() +
+                " не дружит с user " + userStorage.find(friendId).getName());
     }
 
     public void addFriend(long id, long friendId) {
-        userStorage.getById(id).addFriend(friendId);
-        userStorage.getById(friendId).addFriend(id);
-        logger.info("User " + userStorage.getById(id).getName() +
-                " дружит с user " + userStorage.getById(friendId).getName());
+        userStorage.find(id).addFriend(friendId);
+        userStorage.find(friendId).addFriend(id);
+        logger.info("User " + userStorage.find(id).getName() +
+                " дружит с user " + userStorage.find(friendId).getName());
     }
 
 }

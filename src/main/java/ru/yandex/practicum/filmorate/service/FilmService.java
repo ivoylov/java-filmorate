@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 public class FilmService {
 
     private static final Logger logger = LoggerFactory.getLogger(FilmService.class);
-    private final FilmStorage filmStorage;
+    private final InMemoryFilmStorage filmStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage) {
+    public FilmService(InMemoryFilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -28,7 +28,7 @@ public class FilmService {
             logger.info(film + " не прошёл валидацию");
             throw new FilmValidationException();
         }
-        filmStorage.add(film);
+        filmStorage.create(film);
     }
 
     public void update(Film film) {
@@ -45,20 +45,20 @@ public class FilmService {
     }
 
     public ArrayList<Film> getAll() {
-        return new ArrayList<>(filmStorage.getAll());
+        return new ArrayList<>(filmStorage.findAll());
     }
 
     public Film getById(long id) {
-        return filmStorage.getById(id);
+        return filmStorage.find(id);
     }
 
     public void addLike(long filmId, long userId) {
-        filmStorage.getById(filmId).addLike(userId);
+        filmStorage.find(filmId).addLike(userId);
         logger.info("Фильм " + filmId + " поставлен like от user " + userId);
     }
 
     public void deleteLike(long filmId, long userId) {
-        filmStorage.getById(filmId).deleteLike(userId);
+        filmStorage.find(filmId).deleteLike(userId);
     }
 
     public List<Film> getTopFilms(long top) {
@@ -77,7 +77,7 @@ public class FilmService {
     }
 
     private List<Film> sortedFilmsByLikesQuantity() {
-        return filmStorage.getAll()
+        return filmStorage.findAll()
                 .stream()
                 .sorted(Comparator.comparingLong(f0 -> f0.getLikes().size()*-1))
                 .collect(Collectors.toList());
