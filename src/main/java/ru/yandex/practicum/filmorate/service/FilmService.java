@@ -2,7 +2,8 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.FilmValidationException;
+import ru.yandex.practicum.filmorate.exception.film.FilmUnknownException;
+import ru.yandex.practicum.filmorate.exception.film.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ public class FilmService {
             throw new FilmValidationException();
         }
         filmStorage.create(film);
+        logger.info(film + " добавлен");
     }
 
     public void update(Film film) {
@@ -38,10 +40,10 @@ public class FilmService {
         }
         if (!filmStorage.isExist(film.getId())) {
             logger.info(film + " отсутствует в списке");
-            throw new FilmValidationException();
+            throw new FilmUnknownException();
         }
         filmStorage.update(film);
-        logger.info(film + " обновлён.");
+        logger.info(film + " обновлён");
     }
 
     public ArrayList<Film> getAll() {
@@ -54,7 +56,6 @@ public class FilmService {
 
     public void addLike(long filmId, long userId) {
         filmStorage.find(filmId).addLike(userId);
-        logger.info("Фильм " + filmId + " поставлен like от user " + userId);
     }
 
     public void deleteLike(long filmId, long userId) {

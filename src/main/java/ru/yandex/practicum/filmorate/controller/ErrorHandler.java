@@ -5,6 +5,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.exception.*;
+import ru.yandex.practicum.filmorate.exception.film.FilmUnknownException;
+import ru.yandex.practicum.filmorate.exception.film.FilmValidationException;
+import ru.yandex.practicum.filmorate.exception.user.UserUnknownException;
+import ru.yandex.practicum.filmorate.exception.user.UserValidationException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
 @RestControllerAdvice

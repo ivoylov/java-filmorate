@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.UserUnknownException;
-import ru.yandex.practicum.filmorate.exception.UserValidationException;
+import ru.yandex.practicum.filmorate.exception.user.UserUnknownException;
+import ru.yandex.practicum.filmorate.exception.user.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import java.util.ArrayList;
@@ -30,8 +30,7 @@ public class UserService {
             throw new UserValidationException();
         }
         userStorage.create(user);
-        logger.info(user.toString());
-        logger.info("добавлен");
+        logger.info(user + " добавлен");
     }
 
     public void update(User user) {
@@ -43,11 +42,8 @@ public class UserService {
             logger.info(user + " отсутствует в списке");
             throw new UserUnknownException();
         }
-        logger.info(userStorage.find(user.getId()).toString());
-        logger.info("запрос на обновление");
         userStorage.update(user);
-        logger.info(user.toString());
-        logger.info("обновлён");
+        logger.info(user + "обновлён");
     }
 
     public ArrayList<User> getAll() {
@@ -88,15 +84,11 @@ public class UserService {
     public void deleteFriend(long id, long friendId) {
         userStorage.find(id).deleteFriend(friendId);
         userStorage.find(friendId).deleteFriend(id);
-        logger.info("User " + userStorage.find(id).getName() +
-                " не дружит с user " + userStorage.find(friendId).getName());
     }
 
     public void addFriend(long id, long friendId) {
         userStorage.find(id).addFriend(friendId);
         userStorage.find(friendId).addFriend(id);
-        logger.info("User " + userStorage.find(id).getName() +
-                " дружит с user " + userStorage.find(friendId).getName());
     }
 
 }
