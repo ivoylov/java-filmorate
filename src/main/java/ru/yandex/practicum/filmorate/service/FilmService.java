@@ -2,13 +2,11 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exception.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -18,7 +16,7 @@ import java.util.stream.Collectors;
 public class FilmService {
 
     private static final Logger logger = LoggerFactory.getLogger(FilmService.class);
-    FilmStorage filmStorage;
+    private final FilmStorage filmStorage;
 
     @Autowired
     public FilmService(FilmStorage filmStorage) {
@@ -33,7 +31,7 @@ public class FilmService {
         filmStorage.add(film);
     }
 
-    public void update(@Valid @RequestBody Film film) {
+    public void update(Film film) {
         if (!isValid(film)) {
             logger.info(film + " не прошёл валидацию");
             throw new FilmValidationException();
@@ -71,9 +69,6 @@ public class FilmService {
     }
 
     public boolean isValid(Film film) {
-        if (!film.isLikesExist()) {
-            film.setLikes();
-        }
         return !film.getReleaseDate().isBefore(Film.MINIMAL_RELEASE_DATE);
     }
 

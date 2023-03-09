@@ -9,15 +9,15 @@ import java.util.HashSet;
 @Builder
 public class User {
 
-    Long id;
+    private Long id;
     @Email(message = "Некорректный адрес электронной почты")
-    String email;
+    private String email;
     @NotBlank(message = "Пустой логин")
-    String login;
-    String name;
+    private String login;
+    private String name;
     @PastOrPresent(message = "День рождения в будущем")
-    LocalDate birthday;
-    private HashSet<Long> friends;
+    private LocalDate birthday;
+    private final HashSet<Long> friends = new HashSet<>();
 
     public void addFriend(long userId) {
         friends.add(userId);
@@ -25,14 +25,6 @@ public class User {
 
     public void deleteFriend(long userId) {
         friends.remove(userId);
-    }
-
-    public boolean isFriendsExist() {
-        return friends != null;
-    }
-
-    public void setFriends() {
-        friends = new HashSet<>();
     }
 
     public HashSet<Long> getAllFriends() {

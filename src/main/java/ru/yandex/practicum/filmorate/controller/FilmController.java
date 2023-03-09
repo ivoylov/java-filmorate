@@ -17,8 +17,8 @@ import ru.yandex.practicum.filmorate.service.UserService;
 @RequestMapping("/films")
 public class FilmController {
 
-    FilmService filmService;
-    UserService userService;
+    private final FilmService filmService;
+    private final UserService userService;
 
     @Autowired
     public FilmController (FilmService filmService, UserService userService) {
@@ -28,14 +28,18 @@ public class FilmController {
 
     @PostMapping
     public Film add(@Valid @RequestBody Film film) {
-        if (!filmService.isValid(film)) throw new FilmValidationException();
+        if (!filmService.isValid(film)) {
+            throw new FilmValidationException();
+        }
         filmService.add(film);
         return film;
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
-        if (!filmService.isExist(film.getId())) throw new FilmUnknownException();
+        if (!filmService.isExist(film.getId())) {
+            throw new FilmUnknownException();
+        }
         filmService.update(film);
         return film;
     }
@@ -47,27 +51,37 @@ public class FilmController {
 
     @GetMapping("{id}")
     public Film getById(@PathVariable int id) {
-        if (!filmService.isExist(id)) throw new FilmUnknownException();
+        if (!filmService.isExist(id)) {
+            throw new FilmUnknownException();
+        }
         return filmService.getById(id);
     }
 
     @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable long id, @PathVariable long userId) {
-        if (!filmService.isExist(id)) throw new FilmUnknownException();
-        if (!userService.isExist(userId)) throw new UserUnknownException();
+        if (!filmService.isExist(id)) {
+            throw new FilmUnknownException();
+        }
+        if (!userService.isExist(userId)) {
+            throw new UserUnknownException();
+        }
         filmService.addLike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void deleteLike(@PathVariable long id, @PathVariable long userId) {
-        if (!filmService.isExist(id)) throw new FilmUnknownException();
-        if (!userService.isExist(userId)) throw new UserUnknownException();
+        if (!filmService.isExist(id)) {
+            throw new FilmUnknownException();
+        }
+        if (!userService.isExist(userId)) {
+            throw new UserUnknownException();
+        }
         filmService.deleteLike(id, userId);
     }
 
     @GetMapping("/popular")
-    public ArrayList<Film> getPopularFilm(@RequestParam(value = "count", required = false, defaultValue = "10") String count) {
-        return new ArrayList<>(filmService.getTopFilms(Integer.parseInt(count)));
+    public ArrayList<Film> getPopularFilm(@RequestParam(value = "count", required = false, defaultValue = "10") Integer count) {
+        return new ArrayList<>(filmService.getTopFilms(count));
     }
 
 }

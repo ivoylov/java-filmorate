@@ -28,11 +28,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void delete() {
-
-    }
-
-    @Override
     public boolean isExist(long filmId) {
         return films.containsKey(filmId);
     }

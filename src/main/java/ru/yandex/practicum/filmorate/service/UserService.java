@@ -82,9 +82,6 @@ public class UserService {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        if (!user.isFriendsExist()) {
-            user.setFriends();
-        }
         return true;
     }
 

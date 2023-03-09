@@ -8,7 +8,6 @@ public interface FilmStorage {
 
     void add(Film film);
     void update(Film film);
-    void delete();
     boolean isExist(long filmId);
     ArrayList<Film> getAll();
     Film getById(long id);
