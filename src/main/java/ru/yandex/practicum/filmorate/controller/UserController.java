@@ -3,65 +3,85 @@ package ru.yandex.practicum.filmorate.controller;
 import javax.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.UserValidationException;
+import ru.yandex.practicum.filmorate.exception.user.UserUnknownException;
+import ru.yandex.practicum.filmorate.exception.user.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import ru.yandex.practicum.filmorate.service.UserService;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @Validated
 @RequestMapping("/users")
 public class UserController {
 
-    private final HashMap<Integer,User> users = new HashMap<>();
-    private static final Logger logger = LoggerFactory.getLogger(FilmController.class);
-    private int idCounter = 0;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping
     public User add(@Valid @RequestBody User user) {
-        if (!isValid(user)) {
-        logger.info(user + " не прошёл валидацию");
-        throw new UserValidationException();
+        if (!userService.isValid(user)) {
+            throw new UserValidationException();
         }
-        user.setId(++idCounter);
-        users.put(idCounter, user);
-        logger.info(user + " добавлен.");
+        userService.add(user);
         return user;
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User user) {
-        if (!isValid(user)) {
-            logger.info(user + " не прошёл валидацию");
-            throw new UserValidationException();
+        if (!userService.isExist(user.getId())) {
+            throw new UserUnknownException();
         }
-        if (!users.containsKey(user.getId())) {
-            logger.info(user + " отсутствует в списке");
-            throw new UserValidationException();
-        }
-        users.put(user.getId(), user);
-        logger.info(user + " обновлён.");
+        userService.update(user);
         return user;
     }
 
     @GetMapping
     public ArrayList<User> getAll() {
-        return new ArrayList<>(users.values());
+        return userService.getAll();
     }
 
     @GetMapping("{id}")
-    public User getById(@PathVariable("id") int id) {
-        return users.get(id);
+    public User getById(@PathVariable("id") Long id) {
+        if (!userService.isExist(id)) {
+            throw new UserUnknownException();
+        }
+        return userService.getById(id);
     }
 
-    private boolean isValid(User user) {
-        if (user.getLogin().contains(" ")) return false;
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
+    @GetMapping("/{id}/friends")
+    public List<User> getAllFriends(@PathVariable Long id) {
+        if (!userService.isExist(id)) {
+            throw new UserUnknownException();
         }
-        return true;
+        return userService.getAllFriend(id);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable long id, @PathVariable long friendId) {
+        if (!userService.isExist(id) || !userService.isExist(friendId)) {
+            throw new UserUnknownException();
+        }
+        userService.deleteFriend(id, friendId);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable long id, @PathVariable long friendId) {
+        if (!userService.isExist(id) || !userService.isExist(friendId)) {
+            throw new UserUnknownException();
+        }
+        userService.addFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public ArrayList<User> getCommonFriends (@PathVariable long id, @PathVariable long otherId) {
+        if (!userService.isExist(id) || !userService.isExist(otherId)) {
+            throw new UserUnknownException();
+        }
+        return new ArrayList<>(userService.getCommonFriends(id, otherId));
     }
 
 }

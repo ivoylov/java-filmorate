@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import java.time.LocalDate;
+import java.util.HashSet;
 
 @Data
 @Builder
@@ -13,13 +14,23 @@ public class Film {
     public static final int MAX_LENGTH_FILM_DESCRIPTION = 200;
     public static final LocalDate MINIMAL_RELEASE_DATE = LocalDate.of(1895, 12, 28);
 
-    Integer id;
+    private final HashSet<Long> likes = new HashSet<>();
+    private Long id;
     @NotBlank(message = "Пустое имя фильма")
-    String name;
+    private String name;
     @Length(max = MAX_LENGTH_FILM_DESCRIPTION, message = "Максимальная длина описания больше " + MAX_LENGTH_FILM_DESCRIPTION)
-    String description;
-    LocalDate releaseDate;
+    private String description;
+    private LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма должна быть положительной")
-    Long duration;
+    private Long duration;
+
+    public void addLike(Long userId) {
+        likes.add(userId);
+    }
+
+    public void deleteLike(Long userId) {
+        likes.remove(userId);
+    }
+
 
 }
