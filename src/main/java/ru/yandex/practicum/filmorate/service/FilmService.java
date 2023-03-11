@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.film.FilmUnknownException;
 import ru.yandex.practicum.filmorate.exception.film.FilmValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.film.Film;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;

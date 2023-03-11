@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.film;
 
 import javax.validation.constraints.*;
 import lombok.Builder;
@@ -23,6 +23,8 @@ public class Film {
     private LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма должна быть положительной")
     private Long duration;
+    private Genre genre;
+    private Rating rating;
 
     public void addLike(Long userId) {
         likes.add(userId);
