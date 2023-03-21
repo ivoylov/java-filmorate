@@ -54,5 +54,5 @@ CREATE TABLE IF NOT EXISTS relationship (
     status int,
     FOREIGN KEY (user1_id) REFERENCES filmorate_user(filmorate_user_id),
     FOREIGN KEY (user2_id) REFERENCES filmorate_user(filmorate_user_id)
-)
+);
 
