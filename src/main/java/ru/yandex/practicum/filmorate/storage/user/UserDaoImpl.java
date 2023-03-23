@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.storage.user;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -10,24 +9,20 @@ import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.model.User;
 import java.util.ArrayList;
 
+@Component
 public class UserDaoImpl implements UserDao {
 
     private final Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
-
-    public UserDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
     @Override
     public void create(User user) {
-        /*
-        Integer id = rs.getInt("id");
-        String description = rs.getString("description");
-        String photoUrl = rs.getString("photo_url");
-        LocalDate creationDate = rs.getDate("creation_date").toLocalDate();
-        return new Post(id, user, description, photoUrl, creationDate);
-        */
+        String sqlQuery = "INSERT INTO filmorate_user (login, name, email, birthdate) VALUES (?,?,?,?)";
+        jdbcTemplate.update(sqlQuery,
+                user.getLogin(),
+                user.getName(),
+                user.getEmail(),
+                user.getBirthday());
     }
 
     @Override

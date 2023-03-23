@@ -47,12 +47,20 @@ CREATE TABLE IF NOT EXISTS likes (
     FOREIGN KEY (filmorate_user_id) REFERENCES filmorate_user(filmorate_user_id)
 );
 
+CREATE TABLE IF NOT EXISTS relationship_status (
+    status_id int AUTO_INCREMENT PRIMARY KEY,
+    name varchar
+);
+
 CREATE TABLE IF NOT EXISTS relationship (
     relation_it bigint AUTO_INCREMENT PRIMARY KEY,
     user1_id bigint,
     user2_id bigint,
     status int,
     FOREIGN KEY (user1_id) REFERENCES filmorate_user(filmorate_user_id),
-    FOREIGN KEY (user2_id) REFERENCES filmorate_user(filmorate_user_id)
+    FOREIGN KEY (user2_id) REFERENCES filmorate_user(filmorate_user_id),
+    FOREIGN KEY (status) REFERENCES relationship_status(status_id)
 );
+
+
 

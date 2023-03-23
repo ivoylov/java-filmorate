@@ -3,67 +3,91 @@ package ru.yandex.practicum.filmorate.storage.film;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.model.film.Rating;
 import java.util.ArrayList;
 
+@Component
 public class FilmDaoImpl implements FilmDao {
 
     private final Logger log = LoggerFactory.getLogger(FilmDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
-
-    public FilmDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
     @Override
     public void create(Film film) {
-
+        String sqlQuery = "insert into film" +
+                "(name, " +
+                "description, " +
+                "release_date, " +
+                "duration, " +
+                "genre, " +
+                "rating) " +
+                "values (?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sqlQuery,
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration(),
+                film.getGenre().ordinal(),
+                film.getRating().ordinal());
     }
 
     @Override
     public void update(Film film) {
-
+        String sqlQuery = "UPDATE film SET " +
+                "name = ?, " +
+                "description = ?, " +
+                "release_date = ?, " +
+                "duration = ?, " +
+                "genre = ?, " +
+                "rating = ?" +
+                "WHERE film_id = ?";
+        jdbcTemplate.update(sqlQuery,
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration(),
+                film.getGenre().ordinal(),
+                film.getRating().ordinal(),
+                film.getId());
     }
 
     @Override
     public Film find(long id) {
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM film WHERE film_id = ?", id);
-        if(filmRows.next()) {
-            Film film = Film.builder()
-                    .id(filmRows.getLong("film_id"))
-                    .name(filmRows.getString("name"))
-                    .description(filmRows.getString("description"))
-                    .genre(Genre.valueOf(filmRows.getString("genre").toUpperCase()))
-                    .rating(Rating.valueOf(filmRows.getString("rating").toUpperCase()))
-                    .duration(filmRows.getLong("duration"))
-                    .releaseDate(filmRows.getDate("release_date").toLocalDate())
-                    .build();
-            log.info("Найден пользователь: {} {}", film.getId(), film.getName());
-            return film;
-        } else {
-            log.info("Пользователь с идентификатором {} не найден.", id);
-            return null;
-        }
+        return jdbcTemplate.queryForObject("SELECT * FROM film WHERE film_id = ?", filmRowMapper, id);
     }
 
     @Override
     public ArrayList<Film> findAll() {
-        return null;
+        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM film", filmRowMapper));
     }
 
     @Override
     public void delete(long id) {
-
+        jdbcTemplate.update("DELETE FROM film WHERE film_id = ?", id);
     }
 
     @Override
     public boolean isExist(long id) {
-        return false;
+        Integer count = jdbcTemplate.queryForObject("SELECT * FROM film WHERE film_id = ?", Integer.class, id);
+        return count != null;
     }
+
+    private final RowMapper<Film> filmRowMapper = (recordSet, rowNumber) -> {
+        Film film = Film.builder()
+                .id(recordSet.getLong("id"))
+                .name(recordSet.getString("name"))
+                .description(recordSet.getString("description"))
+                .releaseDate(recordSet.getDate("release_date").toLocalDate())
+                .duration(recordSet.getLong("duration"))
+                .genre(Genre.valueOf(recordSet.getString("duration").toUpperCase()))
+                .rating(Rating.valueOf(recordSet.getString("rating").toUpperCase()))
+                .build();
+        return film;
+    };
 
 }
