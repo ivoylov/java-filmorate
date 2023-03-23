@@ -1,7 +1,9 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -12,10 +14,11 @@ import ru.yandex.practicum.filmorate.model.film.Rating;
 import java.util.ArrayList;
 
 @Component
+@AllArgsConstructor
 public class FilmDaoImpl implements FilmDao {
 
     private final Logger log = LoggerFactory.getLogger(FilmDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public void create(Film film) {

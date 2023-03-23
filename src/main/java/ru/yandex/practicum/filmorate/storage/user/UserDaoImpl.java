@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,10 +11,11 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.ArrayList;
 
 @Component
+@AllArgsConstructor
 public class UserDaoImpl implements UserDao {
 
     private final Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public void create(User user) {
@@ -51,8 +53,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User find(long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM film WHERE film_id = ?", userRowMapper, id);
-
+        return jdbcTemplate.queryForObject("SELECT * FROM filmorate_user WHERE filmorate_user_id = ?", userRowMapper, id);
     }
 
     @Override
