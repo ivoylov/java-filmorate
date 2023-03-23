@@ -34,6 +34,7 @@ public class FilmDaoImpl implements FilmDao {
                 film.getDuration(),
                 film.getGenre().ordinal(),
                 film.getRating().ordinal());
+        log.info("В базу добавлен " + film);
     }
 
     @Override
@@ -54,6 +55,7 @@ public class FilmDaoImpl implements FilmDao {
                 film.getGenre().ordinal(),
                 film.getRating().ordinal(),
                 film.getId());
+        log.info("В базе обновлён " + film);
     }
 
     @Override
@@ -69,6 +71,7 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public void delete(long id) {
         jdbcTemplate.update("DELETE FROM film WHERE film_id = ?", id);
+        log.info("Из базы удалён фильм " + id);
     }
 
     @Override
@@ -77,17 +80,14 @@ public class FilmDaoImpl implements FilmDao {
         return count != null;
     }
 
-    private final RowMapper<Film> filmRowMapper = (recordSet, rowNumber) -> {
-        Film film = Film.builder()
-                .id(recordSet.getLong("id"))
-                .name(recordSet.getString("name"))
-                .description(recordSet.getString("description"))
-                .releaseDate(recordSet.getDate("release_date").toLocalDate())
-                .duration(recordSet.getLong("duration"))
-                .genre(Genre.valueOf(recordSet.getString("duration").toUpperCase()))
-                .rating(Rating.valueOf(recordSet.getString("rating").toUpperCase()))
-                .build();
-        return film;
-    };
+    private final RowMapper<Film> filmRowMapper = (recordSet, rowNumber) -> Film.builder()
+            .id(recordSet.getLong("id"))
+            .name(recordSet.getString("name"))
+            .description(recordSet.getString("description"))
+            .releaseDate(recordSet.getDate("release_date").toLocalDate())
+            .duration(recordSet.getLong("duration"))
+            .genre(Genre.valueOf(recordSet.getString("duration").toUpperCase()))
+            .rating(Rating.valueOf(recordSet.getString("rating").toUpperCase()))
+            .build();
 
 }
