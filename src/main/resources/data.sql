@@ -1,1 +1,11 @@
-INSERT INTO filmorate_user (login,name,email,birthdate) VALUES ('login','fromDataSQL','email@mail.ru','1988-08-16');
+INSERT INTO genre (name) VALUES ('COMEDY');
+INSERT INTO genre (name) VALUES ('DRAMA');
+INSERT INTO genre (name) VALUES ('CARTOON');
+INSERT INTO genre (name) VALUES ('THRILLER');
+INSERT INTO genre (name) VALUES ('DOCUMENTARY');
+INSERT INTO genre (name) VALUES ('ACTION');
+INSERT INTO rating (name) VALUES ('G');
+INSERT INTO rating (name) VALUES ('PG');
+INSERT INTO rating (name) VALUES ('PG13');
+INSERT INTO rating (name) VALUES ('R');
+INSERT INTO rating (name) VALUES ('NC17');

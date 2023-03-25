@@ -29,7 +29,7 @@ public class FilmDaoImpl implements FilmDao {
                 "duration, " +
                 "genre, " +
                 "rating) " +
-                "values (?, ?, ?, ?, ?)";
+                "values (?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sqlQuery,
                 film.getName(),
                 film.getDescription(),
@@ -79,18 +79,18 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public boolean isExist(long id) {
-        Integer count = jdbcTemplate.queryForObject("SELECT * FROM film WHERE film_id = ?", Integer.class, id);
-        return count != null;
+        Long findId = jdbcTemplate.queryForObject("SELECT film_id FROM film WHERE film_id = ?", Long.class, id);
+        return findId != null;
     }
 
     private final RowMapper<Film> filmRowMapper = (recordSet, rowNumber) -> Film.builder()
-            .id(recordSet.getLong("id"))
+            .id(recordSet.getLong("film_id"))
             .name(recordSet.getString("name"))
             .description(recordSet.getString("description"))
             .releaseDate(recordSet.getDate("release_date").toLocalDate())
             .duration(recordSet.getLong("duration"))
-            .genre(Genre.valueOf(recordSet.getString("duration").toUpperCase()))
-            .rating(Rating.valueOf(recordSet.getString("rating").toUpperCase()))
+            .genre(Genre.getGenre(recordSet.getInt("genre")))
+            .rating(Rating.getRating(recordSet.getInt("rating")))
             .build();
 
 }

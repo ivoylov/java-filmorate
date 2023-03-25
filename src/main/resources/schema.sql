@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS film (
     film_id bigint AUTO_INCREMENT PRIMARY KEY,
     name varchar,
     description varchar,
-    releaseDate date,
+    release_date date,
     duration bigint,
     genre int,
     rating int

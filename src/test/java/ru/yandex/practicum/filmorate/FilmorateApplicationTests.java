@@ -13,6 +13,10 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.film.Genre;
+import ru.yandex.practicum.filmorate.model.film.Rating;
+import ru.yandex.practicum.filmorate.storage.film.FilmDaoImpl;
 import ru.yandex.practicum.filmorate.storage.user.UserDaoImpl;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,6 +31,7 @@ class FilmorateApplicationTests {
 	private static EmbeddedDatabase embeddedDatabase;
 	private static JdbcTemplate jdbcTemplate;
 	private static UserDaoImpl userStorage;
+    private static FilmDaoImpl filmStorage;
 
 	@BeforeAll
 	public static void setUp() {
@@ -36,7 +41,9 @@ class FilmorateApplicationTests {
 				.build();
 		jdbcTemplate = new JdbcTemplate(embeddedDatabase);
 		userStorage = new UserDaoImpl(jdbcTemplate);
+        filmStorage = new FilmDaoImpl(jdbcTemplate);
         addUsersToDb();
+        addFilmsToDb();
 	}
 
 	@Test
@@ -55,20 +62,50 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void testFindAll() {
-        ArrayList<User> users = userStorage.findAll();
-        Assertions.assertEquals(userStorage.findAll().size(), 3);
+    public void testFindAllUsers() {
+        Assertions.assertEquals(userStorage.findAll().size(), 2);
     }
 
     @Test
     public void testDeleteUser() {
         userStorage.delete(2);
-        Assertions.assertEquals(userStorage.findAll().size(), 2);
+        Assertions.assertEquals(userStorage.findAll().size(), 1);
     }
 
     @Test
     public void testIsExistUser() {
         Assertions.assertTrue(userStorage.isExist(1));
+    }
+
+    @Test
+    public void testFindFilmById() {
+        Film film = filmStorage.find(1);
+        assertThat(film).hasFieldOrPropertyWithValue("id", 1L);
+    }
+
+    @Test
+    public void testUpdateFilm() {
+        Film film = filmStorage.find(1);
+        film.setName("updatedFilm");
+        filmStorage.update(film);
+        Film film1 = filmStorage.find(1);
+        assertThat(film1).hasFieldOrPropertyWithValue("name", "updatedFilm");
+    }
+
+    @Test
+    public void testFindAllFilms() {
+        Assertions.assertEquals(filmStorage.findAll().size(), 2);
+    }
+
+    @Test
+    public void testDeleteFilm() {
+        filmStorage.delete(2);
+        Assertions.assertEquals(filmStorage.findAll().size(), 1);
+    }
+
+    @Test
+    public void testIsExistFilm() {
+        Assertions.assertTrue(filmStorage.isExist(1));
     }
 
 	@AfterAll
@@ -91,6 +128,27 @@ class FilmorateApplicationTests {
                 .email("email@mail.ru")
                 .build();
         userStorage.create(user2);
+    }
+
+    private static void addFilmsToDb () {
+        Film film1 = Film.builder()
+                .name("name1")
+                .description("description1")
+                .duration(120L)
+                .releaseDate(LocalDate.of(2000,1,1))
+                .rating(Rating.R)
+                .genre(Genre.ACTION)
+                .build();
+        filmStorage.create(film1);
+        Film film2 = Film.builder()
+                .name("name2")
+                .description("description2")
+                .duration(120L)
+                .releaseDate(LocalDate.of(2000,1,1))
+                .rating(Rating.G)
+                .genre(Genre.CARTOON)
+                .build();
+        filmStorage.create(film2);
     }
 
 }
