@@ -69,8 +69,8 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean isExist(long id) {
-        Integer count = jdbcTemplate.queryForObject("SELECT * FROM FILMORATE_USER WHERE FILMORATE_USER_ID = ?", Integer.class, id);
-        return count != null;
+        Long findId = jdbcTemplate.queryForObject("SELECT FILMORATE_USER_ID FROM FILMORATE_USER WHERE FILMORATE_USER_ID = ?", Long.class, id);
+        return findId != null;
     }
 
     private final RowMapper<User> userRowMapper = (recordSet, rowNumber) -> User.builder()
