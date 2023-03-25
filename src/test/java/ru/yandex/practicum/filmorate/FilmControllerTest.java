@@ -2,11 +2,14 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.film.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.film.FilmDaoImpl;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import java.time.LocalDate;
@@ -16,7 +19,7 @@ public class FilmControllerTest {
     @Test
     void notValidateIncorrectReleaseDate() {
         FilmController filmController = new FilmController(
-                new FilmService(new InMemoryFilmStorage()),
+                new FilmService(new FilmDaoImpl(new JdbcTemplate())),
                 new UserService(new InMemoryUserStorage()));
         assertThrows(FilmValidationException.class, () -> filmController.add(getFilmWithIncorrectReleaseDate()));
     }
@@ -24,7 +27,7 @@ public class FilmControllerTest {
     @Test
     void getAllFilms() {
         FilmController filmController = new FilmController(
-                new FilmService(new InMemoryFilmStorage()),
+                new FilmService(new FilmDaoImpl(new JdbcTemplate())),
                 new UserService(new InMemoryUserStorage()));
         Film film = getBaseFilm();
         filmController.add(film);
@@ -34,7 +37,7 @@ public class FilmControllerTest {
     @Test
     void getUserById() {
         FilmController filmController = new FilmController(
-                new FilmService(new InMemoryFilmStorage()),
+                new FilmService(new FilmDaoImpl(new JdbcTemplate())),
                 new UserService(new InMemoryUserStorage()));
         Film film = getBaseFilm();
         filmController.add(film);

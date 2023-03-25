@@ -19,8 +19,6 @@ import ru.yandex.practicum.filmorate.model.film.Rating;
 import ru.yandex.practicum.filmorate.storage.film.FilmDaoImpl;
 import ru.yandex.practicum.filmorate.storage.user.UserDaoImpl;
 import java.time.LocalDate;
-import java.util.ArrayList;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest

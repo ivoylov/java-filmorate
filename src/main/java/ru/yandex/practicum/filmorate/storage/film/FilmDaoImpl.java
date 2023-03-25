@@ -3,19 +3,20 @@ package ru.yandex.practicum.filmorate.storage.film;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.model.film.Rating;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class FilmDaoImpl implements FilmDao {
+public class FilmDaoImpl implements FilmStorage {
 
     private final Logger log = LoggerFactory.getLogger(FilmDaoImpl.class);
     private final JdbcTemplate jdbcTemplate;
@@ -71,6 +72,10 @@ public class FilmDaoImpl implements FilmDao {
         return new ArrayList<>(jdbcTemplate.query("SELECT * FROM film", filmRowMapper));
     }
 
+    public List<Genre> getAllGenres() {
+        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM genre", genreRowMapper));
+    }
+
     @Override
     public void delete(long id) {
         jdbcTemplate.update("DELETE FROM film WHERE film_id = ?", id);
@@ -92,5 +97,8 @@ public class FilmDaoImpl implements FilmDao {
             .genre(Genre.getGenre(recordSet.getInt("genre")))
             .rating(Rating.getRating(recordSet.getInt("rating")))
             .build();
+
+    private final RowMapper<Genre> genreRowMapper = (recordSet, rowNumber) ->
+            Genre.getGenre(recordSet.getInt("genre_id"));
 
 }

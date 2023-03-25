@@ -4,12 +4,15 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import ru.yandex.practicum.filmorate.storage.Storage;
+import ru.yandex.practicum.filmorate.model.film.Genre;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 @Component
-public class InMemoryFilmStorage implements Storage<Film> {
+public class InMemoryFilmStorage implements FilmStorage {
 
     private final HashMap<Long, Film> films = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(InMemoryFilmStorage.class);
@@ -33,6 +36,11 @@ public class InMemoryFilmStorage implements Storage<Film> {
     @Override
     public ArrayList<Film> findAll() {
         return new ArrayList<>(films.values());
+    }
+
+    @Override
+    public List<Genre> getAllGenres() {
+        return new ArrayList<>(List.of(Genre.values()));
     }
 
     @Override

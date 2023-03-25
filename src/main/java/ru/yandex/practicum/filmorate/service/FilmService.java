@@ -7,6 +7,9 @@ import ru.yandex.practicum.filmorate.exception.film.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import ru.yandex.practicum.filmorate.model.film.Genre;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.FilmDaoImpl;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,10 +20,10 @@ import java.util.stream.Collectors;
 public class FilmService {
 
     private static final Logger logger = LoggerFactory.getLogger(FilmService.class);
-    private final InMemoryFilmStorage filmStorage;
+    private final FilmDaoImpl filmStorage;
 
     @Autowired
-    public FilmService(InMemoryFilmStorage filmStorage) {
+    public FilmService(FilmDaoImpl filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -67,6 +70,10 @@ public class FilmService {
                 .stream()
                 .limit(top)
                 .collect(Collectors.toList());
+    }
+
+    public List<Genre> getAllGenres() {
+        return filmStorage.getAllGenres();
     }
 
     public boolean isValid(Film film) {
