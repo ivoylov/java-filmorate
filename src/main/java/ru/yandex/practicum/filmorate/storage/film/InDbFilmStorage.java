@@ -22,7 +22,7 @@ public class InDbFilmStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void create(Film film) {
+    public Film create(Film film) {
         String sqlQuery = "insert into film" +
                 "(name, " +
                 "description, " +
@@ -39,6 +39,7 @@ public class InDbFilmStorage implements FilmStorage {
                 film.getGenre().ordinal(),
                 film.getRating().ordinal());
         log.info("В базу добавлен " + film);
+        return finByName(film.getName());
     }
 
     @Override
@@ -100,5 +101,9 @@ public class InDbFilmStorage implements FilmStorage {
 
     private final RowMapper<Genre> genreRowMapper = (recordSet, rowNumber) ->
             Genre.getGenre(recordSet.getInt("genre_id"));
+
+    private Film finByName(String name) {
+        return jdbcTemplate.queryForObject("SELECT * FROM film WHERE name = ?", filmRowMapper, name);
+    }
 
 }

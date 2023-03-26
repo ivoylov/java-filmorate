@@ -19,7 +19,7 @@ public class InDbUserStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void create(User user) {
+    public User create(User user) {
         String sqlQuery = "INSERT INTO filmorate_user " +
                 "(" +
                 "login, " +
@@ -33,6 +33,8 @@ public class InDbUserStorage implements UserStorage {
                 user.getEmail(),
                 user.getBirthday());
         log.info("В базу добавлен " + user);
+        user.setId(getIdByLogin(user.getLogin()));
+        return user;
     }
 
     @Override
@@ -81,5 +83,13 @@ public class InDbUserStorage implements UserStorage {
             .email(recordSet.getString("email"))
             .birthday(recordSet.getDate("birthdate").toLocalDate())
             .build();
+
+    private User findByLogin(String login) {
+        return jdbcTemplate.queryForObject("SELECT * FROM filmorate_user WHERE login = ?", userRowMapper, login);
+    }
+    private Long getIdByLogin(String login) {
+        return jdbcTemplate.queryForObject("SELECT FILMORATE_USER_ID FROM filmorate_user WHERE login = ?", Long.class, login);
+    }
+
 
 }

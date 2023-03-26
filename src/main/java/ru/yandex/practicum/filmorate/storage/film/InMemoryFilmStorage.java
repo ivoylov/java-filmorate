@@ -19,10 +19,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     private long idCounter = 0;
 
     @Override
-    public void create(Film film) {
+    public Film create(Film film) {
         film.setId(++idCounter);
         films.put(idCounter, film);
         logger.info(film + " добавлен.");
+        return film;
     }
 
     @Override

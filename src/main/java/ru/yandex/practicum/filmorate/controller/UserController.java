@@ -26,8 +26,7 @@ public class UserController {
         if (!userService.isValid(user)) {
             throw new UserValidationException();
         }
-        userService.add(user);
-        return user;
+        return userService.add(user);
     }
 
     @PutMapping

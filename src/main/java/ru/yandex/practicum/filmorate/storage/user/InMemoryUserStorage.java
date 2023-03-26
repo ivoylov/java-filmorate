@@ -13,9 +13,10 @@ public class InMemoryUserStorage implements Storage<User> {
     private long idCounter = 0;
 
     @Override
-    public void create(User user) {
+    public User create(User user) {
         user.setId(++idCounter);
         users.put(idCounter, user);
+        return user;
     }
 
     @Override

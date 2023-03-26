@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.exception.user.UserUnknownException;
 import ru.yandex.practicum.filmorate.exception.user.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.InDbUserStorage;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,13 +24,13 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public void add(User user) {
+    public User add(User user) {
         if (!isValid(user)) {
             logger.info(user + " не прошёл валидацию");
             throw new UserValidationException();
         }
-        userStorage.create(user);
         logger.info(user + " добавлен");
+        return userStorage.create(user);
     }
 
     public void update(User user) {
