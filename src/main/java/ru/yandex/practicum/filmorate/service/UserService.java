@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.user.UserUnknownException;
 import ru.yandex.practicum.filmorate.exception.user.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.InDbUserStorage;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,10 +18,10 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-    private final InMemoryUserStorage userStorage;
+    private final InDbUserStorage userStorage;
 
     @Autowired
-    public UserService (InMemoryUserStorage userStorage) {
+    public UserService (InDbUserStorage userStorage) {
         this.userStorage = userStorage;
     }
 

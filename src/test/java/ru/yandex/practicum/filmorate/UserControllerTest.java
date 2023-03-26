@@ -2,33 +2,33 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.user.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
-
+import ru.yandex.practicum.filmorate.storage.user.InDbUserStorage;
 import java.time.LocalDate;
 
 public class UserControllerTest {
 
     @Test
     void setLoginInNameIfBlankName() {
-        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
+        UserController userController = new UserController(new UserService(new InDbUserStorage(new JdbcTemplate())));
         userController.add(getUserWithBlankName());
         assertEquals(userController.getById(1L).getLogin(), userController.getById(1L).getName());
     }
 
     @Test
     void setLoginInNameIfNullName() {
-        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
+        UserController userController = new UserController(new UserService(new InDbUserStorage(new JdbcTemplate())));
         userController.add(getUserWithNullName());
         assertEquals(userController.getById(1L).getLogin(), userController.getById(1L).getName());
     }
 
     @Test
     void getAllUsers() {
-        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
+        UserController userController = new UserController(new UserService(new InDbUserStorage(new JdbcTemplate())));
         User user = getBaseUser();
         userController.add(user);
         assertEquals(userController.getAll().get(0),user);
@@ -36,7 +36,7 @@ public class UserControllerTest {
 
     @Test
     void getUserById() {
-        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
+        UserController userController = new UserController(new UserService(new InDbUserStorage(new JdbcTemplate())));
         User user = getBaseUser();
         userController.add(user);
         assertEquals(userController.getById(1L),user);
@@ -44,7 +44,7 @@ public class UserControllerTest {
 
     @Test
     void notValidateLoginContainsSpace() {
-        UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
+        UserController userController = new UserController(new UserService(new InDbUserStorage(new JdbcTemplate())));
         assertThrows(UserValidationException.class, () -> userController.add(getUserWithLoginContainsSpace()));
     }
 

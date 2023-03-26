@@ -8,9 +8,8 @@ import ru.yandex.practicum.filmorate.model.film.Film;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import ru.yandex.practicum.filmorate.model.film.Genre;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.film.FilmDaoImpl;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InDbFilmStorage;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -20,10 +19,10 @@ import java.util.stream.Collectors;
 public class FilmService {
 
     private static final Logger logger = LoggerFactory.getLogger(FilmService.class);
-    private final FilmDaoImpl filmStorage;
+    private final InDbFilmStorage filmStorage;
 
     @Autowired
-    public FilmService(FilmDaoImpl filmStorage) {
+    public FilmService(InDbFilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 

@@ -16,9 +16,9 @@ import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class FilmDaoImpl implements FilmStorage {
+public class InDbFilmStorage implements FilmStorage {
 
-    private final Logger log = LoggerFactory.getLogger(FilmDaoImpl.class);
+    private final Logger log = LoggerFactory.getLogger(InDbFilmStorage.class);
     private final JdbcTemplate jdbcTemplate;
 
     @Override

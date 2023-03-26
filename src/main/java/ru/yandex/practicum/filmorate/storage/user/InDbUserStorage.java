@@ -6,15 +6,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
+
 import java.util.ArrayList;
 
 @Component
 @AllArgsConstructor
-public class UserDaoImpl implements UserDao {
+public class InDbUserStorage implements UserStorage {
 
-    private final Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
+    private final Logger log = LoggerFactory.getLogger(InDbUserStorage.class);
     private final JdbcTemplate jdbcTemplate;
 
     @Override

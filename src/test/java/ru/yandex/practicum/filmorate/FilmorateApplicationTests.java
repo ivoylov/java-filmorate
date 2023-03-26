@@ -16,8 +16,8 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.model.film.Rating;
-import ru.yandex.practicum.filmorate.storage.film.FilmDaoImpl;
-import ru.yandex.practicum.filmorate.storage.user.UserDaoImpl;
+import ru.yandex.practicum.filmorate.storage.film.InDbFilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.InDbUserStorage;
 import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,8 +28,8 @@ class FilmorateApplicationTests {
 
 	private static EmbeddedDatabase embeddedDatabase;
 	private static JdbcTemplate jdbcTemplate;
-	private static UserDaoImpl userStorage;
-    private static FilmDaoImpl filmStorage;
+	private static InDbUserStorage userStorage;
+    private static InDbFilmStorage filmStorage;
 
 	@BeforeAll
 	public static void setUp() {
@@ -38,8 +38,8 @@ class FilmorateApplicationTests {
 				.setType(EmbeddedDatabaseType.H2)
 				.build();
 		jdbcTemplate = new JdbcTemplate(embeddedDatabase);
-		userStorage = new UserDaoImpl(jdbcTemplate);
-        filmStorage = new FilmDaoImpl(jdbcTemplate);
+		userStorage = new InDbUserStorage(jdbcTemplate);
+        filmStorage = new InDbFilmStorage(jdbcTemplate);
         addUsersToDb();
         addFilmsToDb();
 	}

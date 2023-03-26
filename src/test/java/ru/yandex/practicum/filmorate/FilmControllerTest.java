@@ -9,9 +9,8 @@ import ru.yandex.practicum.filmorate.exception.film.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.film.FilmDaoImpl;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.film.InDbFilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.InDbUserStorage;
 import java.time.LocalDate;
 
 public class FilmControllerTest {
@@ -19,16 +18,16 @@ public class FilmControllerTest {
     @Test
     void notValidateIncorrectReleaseDate() {
         FilmController filmController = new FilmController(
-                new FilmService(new FilmDaoImpl(new JdbcTemplate())),
-                new UserService(new InMemoryUserStorage()));
+                new FilmService(new InDbFilmStorage(new JdbcTemplate())),
+                new UserService(new InDbUserStorage(new JdbcTemplate())));
         assertThrows(FilmValidationException.class, () -> filmController.add(getFilmWithIncorrectReleaseDate()));
     }
 
     @Test
     void getAllFilms() {
         FilmController filmController = new FilmController(
-                new FilmService(new FilmDaoImpl(new JdbcTemplate())),
-                new UserService(new InMemoryUserStorage()));
+                new FilmService(new InDbFilmStorage(new JdbcTemplate())),
+                new UserService(new InDbUserStorage(new JdbcTemplate())));
         Film film = getBaseFilm();
         filmController.add(film);
         assertEquals(filmController.getAll().get(0),film);
@@ -37,8 +36,8 @@ public class FilmControllerTest {
     @Test
     void getUserById() {
         FilmController filmController = new FilmController(
-                new FilmService(new FilmDaoImpl(new JdbcTemplate())),
-                new UserService(new InMemoryUserStorage()));
+                new FilmService(new InDbFilmStorage(new JdbcTemplate())),
+                new UserService(new InDbUserStorage(new JdbcTemplate())));
         Film film = getBaseFilm();
         filmController.add(film);
         assertEquals(filmController.getById(1),film);
