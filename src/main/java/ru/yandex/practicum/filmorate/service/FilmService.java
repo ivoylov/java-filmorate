@@ -26,16 +26,16 @@ public class FilmService {
         this.filmStorage = filmStorage;
     }
 
-    public void add(Film film) {
+    public Film add(Film film) {
         if (!isValid(film)) {
             logger.info(film + " не прошёл валидацию");
             throw new FilmValidationException();
         }
-        filmStorage.create(film);
         logger.info(film + " добавлен");
+        return filmStorage.create(film);
     }
 
-    public void update(Film film) {
+    public Film update(Film film) {
         if (!isValid(film)) {
             logger.info(film + " не прошёл валидацию");
             throw new FilmValidationException();
@@ -44,8 +44,8 @@ public class FilmService {
             logger.info(film + " отсутствует в списке");
             throw new FilmUnknownException();
         }
-        filmStorage.update(film);
         logger.info(film + " обновлён");
+        return filmStorage.update(film);
     }
 
     public ArrayList<Film> getAll() {

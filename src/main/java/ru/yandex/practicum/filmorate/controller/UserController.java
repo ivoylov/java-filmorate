@@ -34,8 +34,7 @@ public class UserController {
         if (!userService.isExist(user.getId())) {
             throw new UserUnknownException();
         }
-        userService.update(user);
-        return user;
+        return userService.update(user);
     }
 
     @GetMapping

@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -10,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.model.film.Rating;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 public class InDbFilmStorage implements FilmStorage {
 
-    private final Logger log = LoggerFactory.getLogger(InDbFilmStorage.class);
     private final JdbcTemplate jdbcTemplate;
 
     @Override
@@ -38,7 +34,6 @@ public class InDbFilmStorage implements FilmStorage {
                 film.getDuration(),
                 film.getGenre().ordinal(),
                 film.getRating().ordinal());
-        log.info("В базу добавлен " + film);
         film.setId(getIdByName(film.getName()));
         return film;
     }
@@ -61,7 +56,6 @@ public class InDbFilmStorage implements FilmStorage {
                 film.getGenre().ordinal(),
                 film.getRating().ordinal(),
                 film.getId());
-        log.info("В базе обновлён " + film);
         return film;
     }
 
@@ -82,7 +76,6 @@ public class InDbFilmStorage implements FilmStorage {
     @Override
     public void delete(long id) {
         jdbcTemplate.update("DELETE FROM film WHERE film_id = ?", id);
-        log.info("Из базы удалён фильм " + id);
     }
 
     @Override
@@ -90,7 +83,6 @@ public class InDbFilmStorage implements FilmStorage {
         try {
             jdbcTemplate.queryForObject("SELECT film_id FROM film WHERE film_id = ?", Long.class, id);
         } catch (Exception e) {
-            log.info("user c id " + id + " не найден");
             return false;
         }
         return true;

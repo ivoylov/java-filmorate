@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -14,7 +12,6 @@ import java.util.ArrayList;
 @AllArgsConstructor
 public class InDbUserStorage implements UserStorage {
 
-    private final Logger log = LoggerFactory.getLogger(InDbUserStorage.class);
     private final JdbcTemplate jdbcTemplate;
 
     @Override
@@ -31,7 +28,6 @@ public class InDbUserStorage implements UserStorage {
                 user.getName(),
                 user.getEmail(),
                 user.getBirthday());
-        log.info("В базу добавлен " + user);
         user.setId(getIdByLogin(user.getLogin()));
         return user;
     }
@@ -50,7 +46,6 @@ public class InDbUserStorage implements UserStorage {
                 user.getEmail(),
                 user.getBirthday(),
                 user.getId());
-        log.info("В базе обновлён " + user);
         return user;
     }
 
@@ -67,7 +62,6 @@ public class InDbUserStorage implements UserStorage {
     @Override
     public void delete(long id) {
         jdbcTemplate.update("DELETE FROM FILMORATE_USER WHERE FILMORATE_USER_ID = ?", id);
-        log.info("Из базы удалён user" + id);
     }
 
     @Override
@@ -75,7 +69,6 @@ public class InDbUserStorage implements UserStorage {
         try {
             jdbcTemplate.queryForObject("SELECT filmorate_user_id FROM FILMORATE_USER WHERE FILMORATE_USER_ID = ?", Long.class, id);
         } catch (Exception e) {
-            log.info("user c id " + id + " не найден");
             return false;
         }
         return true;

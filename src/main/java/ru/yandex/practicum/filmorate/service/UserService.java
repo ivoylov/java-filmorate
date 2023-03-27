@@ -33,7 +33,7 @@ public class UserService {
         return userStorage.create(user);
     }
 
-    public void update(User user) {
+    public User update(User user) {
         if (!isValid(user)) {
             logger.info(user + " не прошёл валидацию");
             throw new UserValidationException();
@@ -42,8 +42,8 @@ public class UserService {
             logger.info(user + " отсутствует в списке");
             throw new UserUnknownException();
         }
-        userStorage.update(user);
         logger.info(user + "обновлён");
+        return userStorage.update(user);
     }
 
     public ArrayList<User> getAll() {
