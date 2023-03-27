@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
-import ru.yandex.practicum.filmorate.model.film.Rating;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,15 +25,17 @@ public class InDbFilmStorage implements FilmStorage {
                 "release_date, " +
                 "duration, " +
                 "genre, " +
-                "rating) " +
-                "values (?, ?, ?, ?, ?, ?)";
+                "rating," +
+                "likes) " +
+                "values (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sqlQuery,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
-                film.getGenre().ordinal(),
-                film.getRating().ordinal());
+                film.getMpa(),
+                film.getGenre(),
+                film.getLikes());
         film.setId(getIdByName(film.getName()));
         return film;
     }
@@ -53,9 +55,9 @@ public class InDbFilmStorage implements FilmStorage {
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
-                film.getGenre().ordinal(),
-                film.getRating().ordinal(),
-                film.getId());
+                film.getMpa(),
+                film.getGenre(),
+                film.getLikes());
         return film;
     }
 
@@ -94,8 +96,8 @@ public class InDbFilmStorage implements FilmStorage {
             .description(recordSet.getString("description"))
             .releaseDate(recordSet.getDate("release_date").toLocalDate())
             .duration(recordSet.getLong("duration"))
-            .genre(Genre.getGenre(recordSet.getInt("genre")))
-            .rating(Rating.getRating(recordSet.getInt("rating")))
+            .mpa(Mpa.builder().id(recordSet.getInt("rating")).build())
+            .genre(List.of(Genre.getGenre(recordSet.getInt("genre"))))
             .build();
 
     private final RowMapper<Genre> genreRowMapper = (recordSet, rowNumber) ->

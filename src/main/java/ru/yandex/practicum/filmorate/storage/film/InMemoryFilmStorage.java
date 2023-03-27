@@ -5,7 +5,6 @@ import ru.yandex.practicum.filmorate.model.film.Film;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import ru.yandex.practicum.filmorate.model.film.Genre;
@@ -22,7 +21,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film create(Film film) {
         film.setId(++idCounter);
         films.put(idCounter, film);
-        logger.info(film + " добавлен.");
         return film;
     }
 

@@ -4,8 +4,9 @@ import javax.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,7 +15,6 @@ public class Film {
     public static final int MAX_LENGTH_FILM_DESCRIPTION = 200;
     public static final LocalDate MINIMAL_RELEASE_DATE = LocalDate.of(1895, 12, 28);
 
-    private final HashSet<Long> likes = new HashSet<>();
     private Long id;
     @NotBlank(message = "Пустое имя фильма")
     private String name;
@@ -23,8 +23,10 @@ public class Film {
     private LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма должна быть положительной")
     private Long duration;
-    private Genre genre;
-    private Rating rating;
+    @NotNull
+    private Mpa mpa;
+    private List<Genre> genre;
+    private List<Long> likes;
 
     public void addLike(Long userId) {
         likes.add(userId);
