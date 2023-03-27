@@ -87,6 +87,9 @@ public class UserService {
     }
 
     public void addFriend(long id, long friendId) {
+        if (!userStorage.isExist(id) || !userStorage.isExist(friendId)) {
+            throw new UserUnknownException();
+        }
         userStorage.find(id).addFriend(friendId);
         userStorage.find(friendId).addFriend(id);
     }
