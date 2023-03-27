@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-
 import java.util.ArrayList;
 
 @Component
@@ -38,7 +37,7 @@ public class InDbUserStorage implements UserStorage {
     }
 
     @Override
-    public void update(User user) {
+    public User update(User user) {
         String sqlQuery = "UPDATE FILMORATE_USER SET " +
                 "login = ?, " +
                 "name = ?, " +
@@ -52,6 +51,7 @@ public class InDbUserStorage implements UserStorage {
                 user.getBirthday(),
                 user.getId());
         log.info("В базе обновлён " + user);
+        return user;
     }
 
     @Override
@@ -72,8 +72,13 @@ public class InDbUserStorage implements UserStorage {
 
     @Override
     public boolean isExist(long id) {
-        Long findId = jdbcTemplate.queryForObject("SELECT FILMORATE_USER_ID FROM FILMORATE_USER WHERE FILMORATE_USER_ID = ?", Long.class, id);
-        return findId != null;
+        try {
+            jdbcTemplate.queryForObject("SELECT filmorate_user_id FROM FILMORATE_USER WHERE FILMORATE_USER_ID = ?", Long.class, id);
+        } catch (Exception e) {
+            log.info("user c id " + id + " не найден");
+            return false;
+        }
+        return true;
     }
 
     private final RowMapper<User> userRowMapper = (recordSet, rowNumber) -> User.builder()
@@ -84,12 +89,8 @@ public class InDbUserStorage implements UserStorage {
             .birthday(recordSet.getDate("birthdate").toLocalDate())
             .build();
 
-    private User findByLogin(String login) {
-        return jdbcTemplate.queryForObject("SELECT * FROM filmorate_user WHERE login = ?", userRowMapper, login);
-    }
     private Long getIdByLogin(String login) {
         return jdbcTemplate.queryForObject("SELECT FILMORATE_USER_ID FROM filmorate_user WHERE login = ?", Long.class, login);
     }
-
 
 }

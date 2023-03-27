@@ -39,11 +39,12 @@ public class InDbFilmStorage implements FilmStorage {
                 film.getGenre().ordinal(),
                 film.getRating().ordinal());
         log.info("В базу добавлен " + film);
-        return finByName(film.getName());
+        film.setId(getIdByName(film.getName()));
+        return film;
     }
 
     @Override
-    public void update(Film film) {
+    public Film update(Film film) {
         String sqlQuery = "UPDATE film SET " +
                 "name = ?, " +
                 "description = ?, " +
@@ -61,6 +62,7 @@ public class InDbFilmStorage implements FilmStorage {
                 film.getRating().ordinal(),
                 film.getId());
         log.info("В базе обновлён " + film);
+        return film;
     }
 
     @Override
@@ -85,8 +87,13 @@ public class InDbFilmStorage implements FilmStorage {
 
     @Override
     public boolean isExist(long id) {
-        Long findId = jdbcTemplate.queryForObject("SELECT film_id FROM film WHERE film_id = ?", Long.class, id);
-        return findId != null;
+        try {
+            jdbcTemplate.queryForObject("SELECT film_id FROM film WHERE film_id = ?", Long.class, id);
+        } catch (Exception e) {
+            log.info("user c id " + id + " не найден");
+            return false;
+        }
+        return true;
     }
 
     private final RowMapper<Film> filmRowMapper = (recordSet, rowNumber) -> Film.builder()
@@ -102,8 +109,8 @@ public class InDbFilmStorage implements FilmStorage {
     private final RowMapper<Genre> genreRowMapper = (recordSet, rowNumber) ->
             Genre.getGenre(recordSet.getInt("genre_id"));
 
-    private Film finByName(String name) {
-        return jdbcTemplate.queryForObject("SELECT * FROM film WHERE name = ?", filmRowMapper, name);
+    private Long getIdByName(String name) {
+        return jdbcTemplate.queryForObject("SELECT FILM_ID FROM FILM WHERE name = ?", Long.class, name);
     }
 
 }
