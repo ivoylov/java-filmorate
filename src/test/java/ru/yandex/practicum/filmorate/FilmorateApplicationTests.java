@@ -15,10 +15,12 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
-import ru.yandex.practicum.filmorate.model.film.Rating;
+import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.InDbFilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.InDbUserStorage;
 import java.time.LocalDate;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -134,8 +136,8 @@ class FilmorateApplicationTests {
                 .description("description1")
                 .duration(120L)
                 .releaseDate(LocalDate.of(2000,1,1))
-                .rating(Rating.R)
-                .genre(Genre.ACTION)
+                .mpa(Mpa.builder().id(1).build())
+                .genre(List.of(Genre.builder().id(1).build()))
                 .build();
         filmStorage.create(film1);
         Film film2 = Film.builder()
@@ -143,8 +145,8 @@ class FilmorateApplicationTests {
                 .description("description2")
                 .duration(120L)
                 .releaseDate(LocalDate.of(2000,1,1))
-                .rating(Rating.G)
-                .genre(Genre.CARTOON)
+                .mpa(Mpa.builder().id(1).build())
+                .genre(List.of(Genre.builder().id(1).build()))
                 .build();
         filmStorage.create(film2);
     }

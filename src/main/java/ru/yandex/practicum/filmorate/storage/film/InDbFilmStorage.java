@@ -4,16 +4,16 @@ import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.model.film.Mpa;
+import ru.yandex.practicum.filmorate.storage.Storage;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class InDbFilmStorage implements FilmStorage {
+public class InDbFilmStorage implements Storage<Film> {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -71,10 +71,6 @@ public class InDbFilmStorage implements FilmStorage {
         return new ArrayList<>(jdbcTemplate.query("SELECT * FROM film", filmRowMapper));
     }
 
-    public List<Genre> getAllGenres() {
-        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM genre", genreRowMapper));
-    }
-
     @Override
     public void delete(long id) {
         jdbcTemplate.update("DELETE FROM film WHERE film_id = ?", id);
@@ -97,11 +93,11 @@ public class InDbFilmStorage implements FilmStorage {
             .releaseDate(recordSet.getDate("release_date").toLocalDate())
             .duration(recordSet.getLong("duration"))
             .mpa(Mpa.builder().id(recordSet.getInt("rating")).build())
-            .genre(List.of(Genre.getGenre(recordSet.getInt("genre"))))
+            .genre(List.of(Genre.builder().id(recordSet.getInt("genre")).build()))
             .build();
 
     private final RowMapper<Genre> genreRowMapper = (recordSet, rowNumber) ->
-            Genre.getGenre(recordSet.getInt("genre_id"));
+            Genre.builder().id(recordSet.getInt("genre_id")).build();
 
     private Long getIdByName(String name) {
         return jdbcTemplate.queryForObject("SELECT FILM_ID FROM FILM WHERE name = ?", Long.class, name);

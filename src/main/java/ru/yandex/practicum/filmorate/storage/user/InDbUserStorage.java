@@ -5,12 +5,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.Storage;
 import java.util.ArrayList;
 
 @Component
 @AllArgsConstructor
-public class InDbUserStorage implements UserStorage {
+public class InDbUserStorage implements Storage<User> {
 
     private final JdbcTemplate jdbcTemplate;
 

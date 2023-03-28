@@ -4,7 +4,6 @@ import javax.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import ru.yandex.practicum.filmorate.model.Mpa;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -29,11 +28,11 @@ public class Film {
     private List<Long> likes;
 
     public void addLike(Long userId) {
-        likes.add(userId);
+        //likes.add(userId);
     }
 
     public void deleteLike(Long userId) {
-        likes.remove(userId);
+        //likes.remove(userId);
     }
 
 

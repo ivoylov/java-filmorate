@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.storage.film.InDbFilmStorage;
-
+import ru.yandex.practicum.filmorate.storage.film.InDbGenreStorage;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -20,10 +20,12 @@ public class FilmService {
 
     private static final Logger logger = LoggerFactory.getLogger(FilmService.class);
     private final InDbFilmStorage filmStorage;
+    private final InDbGenreStorage genreStorage;
 
     @Autowired
-    public FilmService(InDbFilmStorage filmStorage) {
+    public FilmService(InDbFilmStorage filmStorage, InDbGenreStorage genreStorage) {
         this.filmStorage = filmStorage;
+        this.genreStorage = genreStorage;
     }
 
     public Film add(Film film) {
@@ -72,7 +74,7 @@ public class FilmService {
     }
 
     public List<Genre> getAllGenres() {
-        return filmStorage.getAllGenres();
+        return genreStorage.findAll();
     }
 
     public boolean isValid(Film film) {
