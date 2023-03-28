@@ -24,18 +24,14 @@ public class InDbFilmStorage implements Storage<Film> {
                 "description, " +
                 "release_date, " +
                 "duration, " +
-                "genre, " +
-                "rating," +
-                "likes) " +
-                "values (?, ?, ?, ?, ?, ?, ?)";
+                "rating) " +
+                "values (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sqlQuery,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
-                film.getMpa(),
-                film.getGenre(),
-                film.getLikes());
+                film.getMpa().getId());
         film.setId(getIdByName(film.getName()));
         return film;
     }
@@ -47,7 +43,6 @@ public class InDbFilmStorage implements Storage<Film> {
                 "description = ?, " +
                 "release_date = ?, " +
                 "duration = ?, " +
-                "genre = ?, " +
                 "rating = ?" +
                 "WHERE film_id = ?";
         jdbcTemplate.update(sqlQuery,
@@ -55,9 +50,8 @@ public class InDbFilmStorage implements Storage<Film> {
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
-                film.getMpa(),
-                film.getGenre(),
-                film.getLikes());
+                film.getMpa().getId(),
+                film.getId());
         return film;
     }
 
