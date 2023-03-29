@@ -5,8 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Film;
-import ru.yandex.practicum.filmorate.model.film.Genre;
-import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.storage.Storage;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +14,8 @@ import java.util.List;
 public class InDbFilmStorage implements Storage<Film> {
 
     private final JdbcTemplate jdbcTemplate;
+    private InDbMpaStorage inDbMpaStorage;
+    private InDbGenreStorage inDbGenreStorage;
 
     @Override
     public Film create(Film film) {
@@ -86,12 +86,9 @@ public class InDbFilmStorage implements Storage<Film> {
             .description(recordSet.getString("description"))
             .releaseDate(recordSet.getDate("release_date").toLocalDate())
             .duration(recordSet.getLong("duration"))
-            .mpa(Mpa.builder().id(recordSet.getInt("rating")).build())
-            .genre(List.of(Genre.builder().id(recordSet.getInt("genre")).build()))
+            .mpa(inDbMpaStorage.find(recordSet.getInt("rating")))
+            .genres(List.of(inDbGenreStorage.find(recordSet.getInt("genre"))))
             .build();
-
-    private final RowMapper<Genre> genreRowMapper = (recordSet, rowNumber) ->
-            Genre.builder().id(recordSet.getInt("genre_id")).build();
 
     private Long getIdByName(String name) {
         return jdbcTemplate.queryForObject("SELECT FILM_ID FROM FILM WHERE name = ?", Long.class, name);

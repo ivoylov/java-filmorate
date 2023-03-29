@@ -21,7 +21,7 @@ public class Film {
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.mpa = mpa;
-        this.genre = genre;
+        this.genres = genre;
         this.likes = likes;
     }
 
@@ -35,7 +35,7 @@ public class Film {
     private Long duration;
     @NotNull
     private Mpa mpa;
-    private List<Genre> genre;
+    private List<Genre> genres;
     private List<Long> likes;
 
     public void addLike(Long userId) {

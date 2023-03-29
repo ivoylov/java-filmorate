@@ -17,6 +17,8 @@ import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.InDbFilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InDbGenreStorage;
+import ru.yandex.practicum.filmorate.storage.film.InDbMpaStorage;
 import ru.yandex.practicum.filmorate.storage.user.InDbUserStorage;
 import java.time.LocalDate;
 import java.util.List;
@@ -32,6 +34,8 @@ class FilmorateApplicationTests {
 	private static JdbcTemplate jdbcTemplate;
 	private static InDbUserStorage userStorage;
     private static InDbFilmStorage filmStorage;
+    private static InDbMpaStorage inDbMpaStorage;
+    private static InDbGenreStorage inDbGenreStorage;
 
 	@BeforeAll
 	public static void setUp() {
@@ -41,7 +45,7 @@ class FilmorateApplicationTests {
 				.build();
 		jdbcTemplate = new JdbcTemplate(embeddedDatabase);
 		userStorage = new InDbUserStorage(jdbcTemplate);
-        filmStorage = new InDbFilmStorage(jdbcTemplate);
+        filmStorage = new InDbFilmStorage(jdbcTemplate, inDbMpaStorage, inDbGenreStorage);
         addUsersToDb();
         addFilmsToDb();
 	}
@@ -137,7 +141,7 @@ class FilmorateApplicationTests {
                 .duration(120L)
                 .releaseDate(LocalDate.of(2000,1,1))
                 .mpa(Mpa.builder().id(1).build())
-                .genre(List.of(Genre.builder().id(1).build()))
+                .genres(List.of(Genre.builder().id(1).build()))
                 .build();
         filmStorage.create(film1);
         Film film2 = Film.builder()
@@ -146,7 +150,7 @@ class FilmorateApplicationTests {
                 .duration(120L)
                 .releaseDate(LocalDate.of(2000,1,1))
                 .mpa(Mpa.builder().id(1).build())
-                .genre(List.of(Genre.builder().id(1).build()))
+                .genres(List.of(Genre.builder().id(1).build()))
                 .build();
         filmStorage.create(film2);
     }
