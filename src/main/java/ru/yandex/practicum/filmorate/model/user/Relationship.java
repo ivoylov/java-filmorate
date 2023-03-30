@@ -5,7 +5,7 @@ public enum Relationship {
     CONFIRM_BY_USER,
     CONFIRM_BY_FRIEND,
     CONFIRM,
-    UNKNOWN;
+    NOT_EXIST;
 
     public static Relationship getRelationship(int id) {
         switch (id) {
@@ -13,7 +13,7 @@ public enum Relationship {
             case 2 : return CONFIRM_BY_USER;
             case 3 : return CONFIRM_BY_FRIEND;
             case 4 : return CONFIRM;
-            default: return UNKNOWN;
+            default: return NOT_EXIST;
         }
     }
 

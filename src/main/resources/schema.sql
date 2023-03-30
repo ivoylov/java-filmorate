@@ -42,10 +42,7 @@ CREATE TABLE IF NOT EXISTS relationship (
     relation_it bigint AUTO_INCREMENT PRIMARY KEY,
     user_id bigint,
     friend_id bigint,
-    status_id int,
-    FOREIGN KEY (user_id) REFERENCES filmorate_user(filmorate_user_id),
-    FOREIGN KEY (friend_id) REFERENCES filmorate_user(filmorate_user_id),
-    FOREIGN KEY (status_id) REFERENCES relationship_status(status_id)
+    status_id int
 );
 
 

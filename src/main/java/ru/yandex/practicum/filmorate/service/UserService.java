@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.exception.user.UserValidationException;
 import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.storage.user.InDbUserStorage;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +54,7 @@ public class UserService {
     }
 
     public ArrayList<User> getAllFriends(long userId) {
-        ArrayList<Long> friendsId = userStorage.findUserFriends(userId);
+        ArrayList<Long> friendsId = userStorage.findFriends(userId);
         ArrayList<User> friends = new ArrayList<>();
         for (Long friendId : friendsId) {
             friends.add(userStorage.find(friendId));
@@ -89,9 +88,6 @@ public class UserService {
     }
 
     public void addFriend(long userId, long friendId) {
-        if (!userStorage.isExist(userId) || !userStorage.isExist(friendId)) {
-            throw new UserUnknownException();
-        }
         userStorage.createRelationship(userId, friendId);
     }
 

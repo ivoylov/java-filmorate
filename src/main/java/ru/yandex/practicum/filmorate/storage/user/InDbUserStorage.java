@@ -100,9 +100,8 @@ public class InDbUserStorage implements Storage<User> {
                     Integer.class,
                     userId, friendId);
         } catch (Exception e) {
-            return UNCONFIRMED;
+            return NOT_EXIST;
         }
-        if (currentStatusId == null) return UNCONFIRMED;
         return Relationship.getRelationship(currentStatusId);
     }
 
@@ -111,22 +110,37 @@ public class InDbUserStorage implements Storage<User> {
         Relationship currentRelationship = getCurrentRelationship(userId, friendId);
         Relationship newRelationShip;
         switch (currentRelationship) {
-            case UNCONFIRMED: {
+            case NOT_EXIST:
                 if (lowerId == userId) {
                     newRelationShip = CONFIRM_BY_USER;
                 } else {
                     newRelationShip = CONFIRM_BY_FRIEND;
                 }
-            }
+                insertRelationship(userId, friendId, newRelationShip);
+                break;
+            case UNCONFIRMED:
+                if (lowerId == userId) {
+                    newRelationShip = CONFIRM_BY_USER;
+                } else {
+                    newRelationShip = CONFIRM_BY_FRIEND;
+                }
+                updateRelationship(userId, friendId, newRelationShip);
+                break;
             case CONFIRM_BY_USER:
                 if (lowerId == friendId) {
                     newRelationShip = CONFIRM;
-                } 
+                } else {
+                    newRelationShip = CONFIRM_BY_USER;
+                }
+                updateRelationship(userId, friendId, newRelationShip);
+                break;
             case CONFIRM_BY_FRIEND:
                 if (lowerId == userId) {
-                newRelationShip = CONFIRM;
-            } 
-            default:;
+                    newRelationShip = CONFIRM;
+                } else {
+                    newRelationShip = CONFIRM_BY_FRIEND;
+                }
+                updateRelationship(userId, friendId, newRelationShip);
         }
     }
 
@@ -135,27 +149,55 @@ public class InDbUserStorage implements Storage<User> {
         Relationship currentRelationship = getCurrentRelationship(userId, friendId);
         Relationship newRelationShip;
         switch (currentRelationship) {
-            case CONFIRM: {
+            case CONFIRM:
                 if (lowerId == userId) {
                     newRelationShip = CONFIRM_BY_FRIEND;
                 } else {
                     newRelationShip = CONFIRM_BY_USER;
                 }
-            }
+                updateRelationship(userId, friendId, newRelationShip);
+                break;
             case CONFIRM_BY_USER:
                 if (lowerId == friendId) {
                     newRelationShip = UNCONFIRMED;
+                } else {
+                    newRelationShip = CONFIRM_BY_USER;
                 }
+                updateRelationship(userId, friendId, newRelationShip);
+                break;
             case CONFIRM_BY_FRIEND:
                 if (lowerId == userId) {
                     newRelationShip = UNCONFIRMED;
+                } else {
+                    newRelationShip = CONFIRM_BY_FRIEND;
                 }
-            default:;
+                updateRelationship(userId, friendId, newRelationShip);
+                break;
         }
     }
 
-    public ArrayList<Long> findUserFriends(long userId) {
-        return new ArrayList<Long>(jdbcTemplate.query("SELECT friend_id FROM relationship where user_id = ?",  longRowMapper));
+    private void insertRelationship(long userId, long friendId, Relationship relationship) {
+        String query = "INSERT " +
+                "INTO relationship " +
+                "(user_id, friend_id, status_id) " +
+                "VALUES (?,?,?)";
+        jdbcTemplate.update(query, userId, friendId, relationship.ordinal());
+    }
+
+    private void updateRelationship(long userId, long friendId, Relationship relationship) {
+        String query = "UPDATE relationship " +
+                "SET " +
+                "status_id = ? " +
+                "WHERE user_id = ? AND friend_id = ?";
+        jdbcTemplate.update(query, relationship.ordinal(), userId, friendId);
+    }
+
+    public ArrayList<Long> findFriends(long userId) {
+        return new ArrayList<Long>(
+                jdbcTemplate.query("SELECT friend_id " +
+                                "FROM relationship " +
+                                "WHERE user_id = ?",
+                longRowMapper, userId));
     }
 
     private final RowMapper<Long> longRowMapper = (recordSet, rowNumber) -> recordSet.getLong("friend_id");
