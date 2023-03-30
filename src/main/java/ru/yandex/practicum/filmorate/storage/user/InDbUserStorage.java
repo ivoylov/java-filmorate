@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.user.Relationship;
 import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.storage.Storage;
 import java.util.ArrayList;
+
 import static ru.yandex.practicum.filmorate.model.user.Relationship.*;
 
 @Component
@@ -85,13 +86,19 @@ public class InDbUserStorage implements Storage<User> {
             .build();
 
     private Long getIdByLogin(String login) {
-        return jdbcTemplate.queryForObject("SELECT FILMORATE_USER_ID FROM filmorate_user WHERE login = ?", Long.class, login);
+        return jdbcTemplate.queryForObject(
+                "SELECT FILMORATE_USER_ID FROM filmorate_user WHERE login = ?",
+                Long.class,
+                login);
     }
 
-    private Relationship getCurrentRelationship(long lowerId) {
+    private Relationship getCurrentRelationship(long userId, long friendId) {
         Integer currentStatusId;
         try {
-            currentStatusId = jdbcTemplate.queryForObject("SELECT status_id FROM relationship WHERE lower_id = ?", Integer.class, lowerId);
+            currentStatusId = jdbcTemplate.queryForObject(
+                    "SELECT status_id FROM relationship WHERE user_id = ? AND friend_id = ?",
+                    Integer.class,
+                    userId, friendId);
         } catch (Exception e) {
             return UNCONFIRMED;
         }
@@ -99,56 +106,58 @@ public class InDbUserStorage implements Storage<User> {
         return Relationship.getRelationship(currentStatusId);
     }
 
-    public void createRelationship(long user, long friend) {
-        // выбрать наименьший id пользователя для вставки в базу
-        // выбрать пользователя, который запрашивает дружбу
-        // проверить текущий статус
-        // если статус - не дружат, сделать не подтверждён вторым пользователем
-        // если статус уже подтверждён вторым пользователем, то обновить до статуса дружат
-        long lowerId = Long.min(user, friend);
-        Relationship currentRelationship = getCurrentRelationship(lowerId);
+    public void createRelationship(long userId, long friendId) {
+        long lowerId = Long.min(userId, friendId);
+        Relationship currentRelationship = getCurrentRelationship(userId, friendId);
         Relationship newRelationShip;
         switch (currentRelationship) {
             case UNCONFIRMED: {
-                if (lowerId == user) {
+                if (lowerId == userId) {
                     newRelationShip = CONFIRM_BY_USER;
                 } else {
                     newRelationShip = CONFIRM_BY_FRIEND;
                 }
             }
             case CONFIRM_BY_USER:
-                if (lowerId == friend) {
+                if (lowerId == friendId) {
                     newRelationShip = CONFIRM;
                 } 
             case CONFIRM_BY_FRIEND:
-                if (lowerId == user) {
+                if (lowerId == userId) {
                 newRelationShip = CONFIRM;
             } 
             default:;
         }
     }
 
-    public void deleteRelationship(long user, long friend) {
-        long lowerId = Long.min(user, friend);
-        Relationship currentRelationship = getCurrentRelationship(lowerId);
+    public void deleteRelationship(long userId, long friendId) {
+        long lowerId = Long.min(userId, friendId);
+        Relationship currentRelationship = getCurrentRelationship(userId, friendId);
         Relationship newRelationShip;
         switch (currentRelationship) {
             case CONFIRM: {
-                if (lowerId == user) {
+                if (lowerId == userId) {
                     newRelationShip = CONFIRM_BY_FRIEND;
                 } else {
                     newRelationShip = CONFIRM_BY_USER;
                 }
             }
             case CONFIRM_BY_USER:
-                if (lowerId == friend) {
+                if (lowerId == friendId) {
                     newRelationShip = UNCONFIRMED;
                 }
             case CONFIRM_BY_FRIEND:
-                if (lowerId == user) {
+                if (lowerId == userId) {
                     newRelationShip = UNCONFIRMED;
                 }
             default:;
         }
     }
+
+    public ArrayList<Long> findUserFriends(long userId) {
+        return new ArrayList<Long>(jdbcTemplate.query("SELECT friend_id FROM relationship where user_id = ?",  longRowMapper));
+    }
+
+    private final RowMapper<Long> longRowMapper = (recordSet, rowNumber) -> recordSet.getLong("friend_id");
+
 }

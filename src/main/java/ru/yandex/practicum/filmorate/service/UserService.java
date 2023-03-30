@@ -54,8 +54,8 @@ public class UserService {
         return userStorage.find(id);
     }
 
-    public ArrayList<User> getAllFriends(long id) {
-        HashSet<Long> friendsId = userStorage.find(id).getAllFriends();
+    public ArrayList<User> getAllFriends(long userId) {
+        ArrayList<Long> friendsId = userStorage.findUserFriends(userId);
         ArrayList<User> friends = new ArrayList<>();
         for (Long friendId : friendsId) {
             friends.add(userStorage.find(friendId));
