@@ -1,11 +1,20 @@
 package ru.yandex.practicum.filmorate.model.user;
 
 public enum Relationship {
-    UNCONFIRMED,
-    CONFIRM_BY_USER,
-    CONFIRM_BY_FRIEND,
-    CONFIRM,
-    NOT_EXIST;
+    NOT_EXIST (0),
+    UNCONFIRMED(1),
+    CONFIRM_BY_USER(2),
+    CONFIRM_BY_FRIEND (3),
+    CONFIRM (4);
+
+    private final int statusId;
+    Relationship(int statusId) {
+        this.statusId = statusId;
+    }
+
+    public int getStatusId() {
+        return statusId;
+    }
 
     public static Relationship getRelationship(int id) {
         switch (id) {

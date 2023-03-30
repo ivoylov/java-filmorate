@@ -37,7 +37,7 @@ public class InDbUserStorage implements Storage<User> {
 
     @Override
     public User update(User user) {
-        String sqlQuery = "UPDATE FILMORATE_USER SET " +
+        String sqlQuery = "UPDATE filmorate_user SET " +
                 "login = ?, " +
                 "name = ?, " +
                 "email = ?, " +
@@ -99,8 +99,7 @@ public class InDbUserStorage implements Storage<User> {
         Integer currentStatusId;
         try {
             currentStatusId = jdbcTemplate.queryForObject(
-                    "SELECT status_id FROM relationship " +
-                            "WHERE user_id = ? AND friend_id = ?",
+                    "SELECT status_id FROM relationship WHERE (user_id = ? AND friend_id = ?)",
                     Integer.class,
                     userId, friendId);
         } catch (Exception e) {
@@ -151,7 +150,7 @@ public class InDbUserStorage implements Storage<User> {
     public void deleteRelationship(long userId, long friendId) {
         long lowerId = Long.min(userId, friendId);
         Relationship currentRelationship = getCurrentRelationship(userId, friendId);
-        Relationship newRelationShip;
+        Relationship newRelationShip = UNCONFIRMED;
         switch (currentRelationship) {
             case CONFIRM:
                 if (lowerId == userId) {
@@ -163,20 +162,15 @@ public class InDbUserStorage implements Storage<User> {
                 break;
             case CONFIRM_BY_USER:
                 if (lowerId == friendId) {
-                    newRelationShip = UNCONFIRMED;
-                } else {
                     newRelationShip = CONFIRM_BY_USER;
                 }
                 updateRelationship(userId, friendId, newRelationShip);
                 break;
             case CONFIRM_BY_FRIEND:
-                if (lowerId == userId) {
-                    newRelationShip = UNCONFIRMED;
-                } else {
+                if (lowerId == friendId) {
                     newRelationShip = CONFIRM_BY_FRIEND;
                 }
                 updateRelationship(userId, friendId, newRelationShip);
-                break;
         }
     }
 
@@ -185,23 +179,29 @@ public class InDbUserStorage implements Storage<User> {
                 "INTO relationship " +
                 "(user_id, friend_id, status_id) " +
                 "VALUES (?,?,?)";
-        jdbcTemplate.update(query, userId, friendId, relationship.ordinal());
+        jdbcTemplate.update(query, userId, friendId, relationship.getStatusId());
     }
 
     private void updateRelationship(long userId, long friendId, Relationship relationship) {
         String query = "UPDATE relationship " +
                 "SET " +
                 "status_id = ? " +
-                "WHERE user_id = ? AND friend_id = ?";
-        jdbcTemplate.update(query, relationship.ordinal(), userId, friendId);
+                "WHERE (user_id = ? AND friend_id = ?)";
+        jdbcTemplate.update(query, relationship.getStatusId(), userId, friendId);
     }
 
     public ArrayList<Long> findFriends(long userId) {
         return new ArrayList<>(
                 jdbcTemplate.query("SELECT friend_id " +
                                 "FROM relationship " +
-                                "WHERE user_id = ?",
-                longRowMapper, userId));
+                                "WHERE user_id = ? AND (status_id = ? OR status_id = ?) " +
+                                "UNION " +
+                                "SELECT user_id " +
+                                "FROM relationship " +
+                                "WHERE friend_id = ? AND (status_id = ? OR status_id = ?)",
+                        longRowMapper,
+                        userId, CONFIRM_BY_USER.getStatusId(), CONFIRM.getStatusId(),
+                        userId, CONFIRM_BY_FRIEND.getStatusId(), CONFIRM.getStatusId()));
     }
 
     private final RowMapper<Long> longRowMapper = (recordSet, rowNumber) -> recordSet.getLong("friend_id");

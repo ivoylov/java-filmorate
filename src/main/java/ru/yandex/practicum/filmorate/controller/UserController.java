@@ -60,20 +60,20 @@ public class UserController {
         return userService.getAllFriends(id);
     }
 
-    @DeleteMapping("/{id}/friends/{friendId}")
-    public void deleteFriend(@PathVariable long id, @PathVariable long friendId) {
-        if (!userService.isExist(id) || !userService.isExist(friendId)) {
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    public void deleteFriend(@PathVariable long userId, @PathVariable long friendId) {
+        if (!userService.isExist(userId) || !userService.isExist(friendId)) {
             throw new UserUnknownException();
         }
-        userService.deleteFriend(id, friendId);
+        userService.deleteFriend(userId, friendId);
     }
 
-    @PutMapping("/{id}/friends/{friendId}")
-    public void addFriend(@PathVariable long id, @PathVariable long friendId) {
-        if (!userService.isExist(id) || !userService.isExist(friendId)) {
+    @PutMapping("/{userId}/friends/{friendId}")
+    public void addFriend(@PathVariable long userId, @PathVariable long friendId) {
+        if (!userService.isExist(userId) || !userService.isExist(friendId)) {
             throw new UserUnknownException();
         }
-        userService.addFriend(id, friendId);
+        userService.addFriend(userId, friendId);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
