@@ -95,4 +95,33 @@ public class InDbFilmStorage implements Storage<Film> {
         return jdbcTemplate.queryForObject("SELECT FILM_ID FROM FILM WHERE name = ?", Long.class, name);
     }
 
+    public void addLike(long filmId, long userId) {
+        String query = "INSERT INTO likes " +
+                "(film_id, user_id) " +
+                "VALUES (?,?)";
+        jdbcTemplate.update(query, filmId, userId);
+    }
+
+    public void deleteLike(long filmId, long userId) {
+        String query = "DELETE FROM likes WHERE film_id = ? AND user_id = ?";
+        jdbcTemplate.update(query, filmId, userId);
+    }
+
+    public List<Film> getTopFilm (int top) {
+        String likesQuery = "SELECT * FROM film " +
+                "WHERE film_id IN " +
+                "(SELECT film_id " +
+                "FROM likes " +
+                "GROUP BY film_id " +
+                "ORDER BY SUM(user_id) " +
+                "LIMIT ?)";
+        List<Film> likes = jdbcTemplate.query(likesQuery, filmRowMapper, top);
+        if (likes.size() == 0) {
+            return jdbcTemplate.query("SELECT * FROM film LIMIT ?", filmRowMapper, top);
+        }
+        return likes;
+    }
+
+    private final RowMapper<Long> longRowMapper = (recordSet, rowNumber) -> (recordSet.getLong("film_id"));
+
 }

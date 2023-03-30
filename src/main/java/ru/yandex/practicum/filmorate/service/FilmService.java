@@ -7,9 +7,7 @@ import ru.yandex.practicum.filmorate.exception.film.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.storage.film.InDbFilmStorage;
-import ru.yandex.practicum.filmorate.storage.film.InDbGenreStorage;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -61,18 +59,15 @@ public class FilmService {
     }
 
     public void addLike(long filmId, long userId) {
-        filmStorage.find(filmId).addLike(userId);
+        filmStorage.addLike(filmId, userId);
     }
 
     public void deleteLike(long filmId, long userId) {
-        filmStorage.find(filmId).deleteLike(userId);
+        filmStorage.deleteLike(filmId, userId);
     }
 
-    public List<Film> getTopFilms(long top) {
-        return sortedFilmsByLikesQuantity()
-                .stream()
-                .limit(top)
-                .collect(Collectors.toList());
+    public List<Film> getTopFilms(int top) {
+        return filmStorage.getTopFilm(top);
     }
 
     public boolean isValid(Film film) {
@@ -83,11 +78,5 @@ public class FilmService {
         return filmStorage.isExist(id);
     }
 
-    private List<Film> sortedFilmsByLikesQuantity() {
-        return filmStorage.findAll()
-                .stream()
-                .sorted(Comparator.comparingLong(f0 -> f0.getLikes().size()*-1))
-                .collect(Collectors.toList());
-    }
 
 }

@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS film (
 );
 
 CREATE TABLE IF NOT EXISTS filmorate_user (
-    filmorate_user_id bigint AUTO_INCREMENT PRIMARY KEY,
+    user_id bigint AUTO_INCREMENT PRIMARY KEY,
     login varchar,
     name varchar,
     email varchar,
@@ -28,9 +28,7 @@ CREATE TABLE IF NOT EXISTS genre (
 
 CREATE TABLE IF NOT EXISTS likes (
     film_id bigint,
-    filmorate_user_id bigint,
-    FOREIGN KEY (film_id) REFERENCES film(film_id),
-    FOREIGN KEY (filmorate_user_id) REFERENCES filmorate_user(filmorate_user_id)
+    user_id bigint
 );
 
 CREATE TABLE IF NOT EXISTS relationship_status (

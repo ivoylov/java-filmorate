@@ -42,7 +42,7 @@ public class InDbUserStorage implements Storage<User> {
                 "name = ?, " +
                 "email = ?, " +
                 "birthdate = ? " +
-                "WHERE filmorate_user_id = ?";
+                "WHERE user_id = ?";
         jdbcTemplate.update(sqlQuery,
                 user.getLogin(),
                 user.getName(),
@@ -54,23 +54,26 @@ public class InDbUserStorage implements Storage<User> {
 
     @Override
     public User find(long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM filmorate_user WHERE filmorate_user_id = ?", userRowMapper, id);
+        return jdbcTemplate.queryForObject("SELECT * FROM filmorate_user " +
+                "WHERE user_id = ?", userRowMapper, id);
     }
 
     @Override
     public ArrayList<User> findAll() {
-        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM FILMORATE_USER", userRowMapper));
+        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM filmorate_user", userRowMapper));
     }
 
     @Override
     public void delete(long id) {
-        jdbcTemplate.update("DELETE FROM FILMORATE_USER WHERE FILMORATE_USER_ID = ?", id);
+        jdbcTemplate.update("DELETE FROM filmorate_user " +
+                "WHERE user_id = ?", id);
     }
 
     @Override
     public boolean isExist(long id) {
         try {
-            jdbcTemplate.queryForObject("SELECT filmorate_user_id FROM FILMORATE_USER WHERE FILMORATE_USER_ID = ?", Long.class, id);
+            jdbcTemplate.queryForObject("SELECT user_id FROM filmorate_user WHERE " +
+                    "user_id = ?", Long.class, id);
         } catch (Exception e) {
             return false;
         }
@@ -78,7 +81,7 @@ public class InDbUserStorage implements Storage<User> {
     }
 
     private final RowMapper<User> userRowMapper = (recordSet, rowNumber) -> User.builder()
-            .id(recordSet.getLong("filmorate_user_id"))
+            .id(recordSet.getLong("user_id"))
             .login(recordSet.getString("login"))
             .name(recordSet.getString("name"))
             .email(recordSet.getString("email"))
@@ -87,7 +90,7 @@ public class InDbUserStorage implements Storage<User> {
 
     private Long getIdByLogin(String login) {
         return jdbcTemplate.queryForObject(
-                "SELECT FILMORATE_USER_ID FROM filmorate_user WHERE login = ?",
+                "SELECT user_id FROM filmorate_user WHERE login = ?",
                 Long.class,
                 login);
     }
@@ -96,7 +99,8 @@ public class InDbUserStorage implements Storage<User> {
         Integer currentStatusId;
         try {
             currentStatusId = jdbcTemplate.queryForObject(
-                    "SELECT status_id FROM relationship WHERE user_id = ? AND friend_id = ?",
+                    "SELECT status_id FROM relationship " +
+                            "WHERE user_id = ? AND friend_id = ?",
                     Integer.class,
                     userId, friendId);
         } catch (Exception e) {
@@ -193,7 +197,7 @@ public class InDbUserStorage implements Storage<User> {
     }
 
     public ArrayList<Long> findFriends(long userId) {
-        return new ArrayList<Long>(
+        return new ArrayList<>(
                 jdbcTemplate.query("SELECT friend_id " +
                                 "FROM relationship " +
                                 "WHERE user_id = ?",
