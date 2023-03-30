@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.user.UserUnknownException;
 import ru.yandex.practicum.filmorate.exception.user.UserValidationException;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.storage.user.InDbUserStorage;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -54,7 +54,7 @@ public class UserService {
         return userStorage.find(id);
     }
 
-    public ArrayList<User> getAllFriend(long id) {
+    public ArrayList<User> getAllFriends(long id) {
         HashSet<Long> friendsId = userStorage.find(id).getAllFriends();
         ArrayList<User> friends = new ArrayList<>();
         for (Long friendId : friendsId) {
@@ -64,8 +64,8 @@ public class UserService {
     }
 
     public List<User> getCommonFriends(long id, long otherId) {
-        ArrayList<User> userFriends = getAllFriend(id);
-        ArrayList<User> otherUserFriends = getAllFriend(otherId);
+        ArrayList<User> userFriends = getAllFriends(id);
+        ArrayList<User> otherUserFriends = getAllFriends(otherId);
         return userFriends.stream().filter(otherUserFriends::contains).collect(Collectors.toList());
     }
 
@@ -81,17 +81,18 @@ public class UserService {
         return true;
     }
 
-    public void deleteFriend(long id, long friendId) {
-        userStorage.find(id).deleteFriend(friendId);
-        userStorage.find(friendId).deleteFriend(id);
-    }
-
-    public void addFriend(long id, long friendId) {
-        if (!userStorage.isExist(id) || !userStorage.isExist(friendId)) {
+    public void deleteFriend(long userId, long friendId) {
+        if (!userStorage.isExist(userId) || !userStorage.isExist(friendId)) {
             throw new UserUnknownException();
         }
-        userStorage.find(id).addFriend(friendId);
-        userStorage.find(friendId).addFriend(id);
+        userStorage.deleteRelationship(userId, friendId);
+    }
+
+    public void addFriend(long userId, long friendId) {
+        if (!userStorage.isExist(userId) || !userStorage.isExist(friendId)) {
+            throw new UserUnknownException();
+        }
+        userStorage.createRelationship(userId, friendId);
     }
 
 }

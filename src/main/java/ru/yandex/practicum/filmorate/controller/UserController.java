@@ -6,7 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.user.UserUnknownException;
 import ru.yandex.practicum.filmorate.exception.user.UserValidationException;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class UserController {
         if (!userService.isExist(id)) {
             throw new UserUnknownException();
         }
-        return userService.getAllFriend(id);
+        return userService.getAllFriends(id);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")

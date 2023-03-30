@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.user.Relationship;
+import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.storage.Storage;
 import java.util.ArrayList;
+import static ru.yandex.practicum.filmorate.model.user.Relationship.*;
 
 @Component
 @AllArgsConstructor
@@ -86,4 +88,67 @@ public class InDbUserStorage implements Storage<User> {
         return jdbcTemplate.queryForObject("SELECT FILMORATE_USER_ID FROM filmorate_user WHERE login = ?", Long.class, login);
     }
 
+    private Relationship getCurrentRelationship(long lowerId) {
+        Integer currentStatusId;
+        try {
+            currentStatusId = jdbcTemplate.queryForObject("SELECT status_id FROM relationship WHERE lower_id = ?", Integer.class, lowerId);
+        } catch (Exception e) {
+            return UNCONFIRMED;
+        }
+        if (currentStatusId == null) return UNCONFIRMED;
+        return Relationship.getRelationship(currentStatusId);
+    }
+
+    public void createRelationship(long user, long friend) {
+        // выбрать наименьший id пользователя для вставки в базу
+        // выбрать пользователя, который запрашивает дружбу
+        // проверить текущий статус
+        // если статус - не дружат, сделать не подтверждён вторым пользователем
+        // если статус уже подтверждён вторым пользователем, то обновить до статуса дружат
+        long lowerId = Long.min(user, friend);
+        Relationship currentRelationship = getCurrentRelationship(lowerId);
+        Relationship newRelationShip;
+        switch (currentRelationship) {
+            case UNCONFIRMED: {
+                if (lowerId == user) {
+                    newRelationShip = CONFIRM_BY_USER;
+                } else {
+                    newRelationShip = CONFIRM_BY_FRIEND;
+                }
+            }
+            case CONFIRM_BY_USER:
+                if (lowerId == friend) {
+                    newRelationShip = CONFIRM;
+                } 
+            case CONFIRM_BY_FRIEND:
+                if (lowerId == user) {
+                newRelationShip = CONFIRM;
+            } 
+            default:;
+        }
+    }
+
+    public void deleteRelationship(long user, long friend) {
+        long lowerId = Long.min(user, friend);
+        Relationship currentRelationship = getCurrentRelationship(lowerId);
+        Relationship newRelationShip;
+        switch (currentRelationship) {
+            case CONFIRM: {
+                if (lowerId == user) {
+                    newRelationShip = CONFIRM_BY_FRIEND;
+                } else {
+                    newRelationShip = CONFIRM_BY_USER;
+                }
+            }
+            case CONFIRM_BY_USER:
+                if (lowerId == friend) {
+                    newRelationShip = UNCONFIRMED;
+                }
+            case CONFIRM_BY_FRIEND:
+                if (lowerId == user) {
+                    newRelationShip = UNCONFIRMED;
+                }
+            default:;
+        }
+    }
 }
