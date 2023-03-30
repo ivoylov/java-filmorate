@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.storage.Storage;
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @AllArgsConstructor
@@ -26,12 +27,22 @@ public class InDbGenreStorage implements Storage<Genre> {
 
     @Override
     public Genre find(long id) {
-        return jdbcTemplate.queryForObject("SELECT name FROM genre WHERE genre_id = ?", genreRowMapper, id);
+        if (id < 1) {
+            return null;
+        }
+        return jdbcTemplate.queryForObject("SELECT * FROM genre WHERE genre_id = ?", genreRowMapper, id);
+    }
+
+    public ArrayList<Genre> findAll(long id) {
+        if (id < 1) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(List.of(jdbcTemplate.queryForObject("SELECT * FROM genre WHERE genre_id = ?", genreRowMapper, id)));
     }
 
     @Override
     public ArrayList<Genre> findAll() {
-        return null;
+        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM genre", genreRowMapper));
     }
 
     @Override
@@ -41,7 +52,12 @@ public class InDbGenreStorage implements Storage<Genre> {
 
     @Override
     public boolean isExist(long id) {
-        return false;
+        try {
+            jdbcTemplate.queryForObject("SELECT genre_id FROM genre WHERE genre_id = ?", Long.class, id);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     private final RowMapper<Genre> genreRowMapper = (recordSet, rowNumber) -> Genre.builder()

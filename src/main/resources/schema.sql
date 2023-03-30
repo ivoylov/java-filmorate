@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS film (
     release_date date,
     duration bigint,
     genre_id int,
-    rating_id int
+    mpa_id int
 );
 
 CREATE TABLE IF NOT EXISTS filmorate_user (
@@ -16,22 +16,14 @@ CREATE TABLE IF NOT EXISTS filmorate_user (
     birthdate date
 );
 
-CREATE TABLE IF NOT EXISTS rating (
-    rating_id int AUTO_INCREMENT PRIMARY KEY,
-    name varchar,
-    FOREIGN KEY (rating_id) REFERENCES film(rating_id)
+CREATE TABLE IF NOT EXISTS mpa (
+    mpa_id int AUTO_INCREMENT PRIMARY KEY,
+    name varchar
 );
 
 CREATE TABLE IF NOT EXISTS genre (
     genre_id int AUTO_INCREMENT PRIMARY KEY,
     name varchar
-);
-
-CREATE TABLE IF NOT EXISTS film_genre (
-    film_id int,
-    genre_id int,
-    FOREIGN KEY (film_id) REFERENCES film(film_id),
-    FOREIGN KEY (genre_id) REFERENCES genre(genre_id)
 );
 
 CREATE TABLE IF NOT EXISTS likes (

@@ -24,7 +24,7 @@ public class InDbFilmStorage implements Storage<Film> {
                 "description, " +
                 "release_date, " +
                 "duration, " +
-                "rating) " +
+                "mpa_id) " +
                 "values (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sqlQuery,
                 film.getName(),
@@ -43,7 +43,7 @@ public class InDbFilmStorage implements Storage<Film> {
                 "description = ?, " +
                 "release_date = ?, " +
                 "duration = ?, " +
-                "rating = ?" +
+                "mpa_id = ?" +
                 "WHERE film_id = ?";
         jdbcTemplate.update(sqlQuery,
                 film.getName(),
@@ -57,6 +57,7 @@ public class InDbFilmStorage implements Storage<Film> {
 
     @Override
     public Film find(long id) {
+        if (id < 1) return null;
         return jdbcTemplate.queryForObject("SELECT * FROM film WHERE film_id = ?", filmRowMapper, id);
     }
 
@@ -86,8 +87,8 @@ public class InDbFilmStorage implements Storage<Film> {
             .description(recordSet.getString("description"))
             .releaseDate(recordSet.getDate("release_date").toLocalDate())
             .duration(recordSet.getLong("duration"))
-            .mpa(inDbMpaStorage.find(recordSet.getInt("rating")))
-            .genres(List.of(inDbGenreStorage.find(recordSet.getInt("genre"))))
+            .mpa(inDbMpaStorage.find(recordSet.getInt("mpa_id")))
+            .genres(inDbGenreStorage.findAll(recordSet.getInt("genre_id")))
             .build();
 
     private Long getIdByName(String name) {

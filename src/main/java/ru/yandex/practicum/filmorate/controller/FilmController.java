@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.exception.film.FilmValidationException;
 import ru.yandex.practicum.filmorate.exception.user.UserUnknownException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import java.util.ArrayList;
-import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -81,11 +80,6 @@ public class FilmController {
     @GetMapping("/popular")
     public ArrayList<Film> getPopularFilm(@RequestParam(value = "count", required = false, defaultValue = "10") Integer count) {
         return new ArrayList<>(filmService.getTopFilms(count));
-    }
-
-    @GetMapping("/genres")
-    public ArrayList<Genre> getAllGenres() {
-        return new ArrayList<>(filmService.getAllGenres());
     }
 
 }

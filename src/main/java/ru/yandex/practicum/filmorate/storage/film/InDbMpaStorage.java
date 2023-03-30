@@ -26,12 +26,13 @@ public class InDbMpaStorage implements Storage<Mpa> {
 
     @Override
     public Mpa find(long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM rating WHERE rating_id = ?", mpaRowMapper, id);
+        if (id < 1) return null;
+        return jdbcTemplate.queryForObject("SELECT * FROM mpa WHERE mpa_id = ?", mpaRowMapper, id);
     }
 
     @Override
     public ArrayList<Mpa> findAll() {
-        return null;
+        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM mpa", mpaRowMapper));
     }
 
     @Override
@@ -39,11 +40,16 @@ public class InDbMpaStorage implements Storage<Mpa> {
 
     @Override
     public boolean isExist(long id) {
-        return false;
+        try {
+            jdbcTemplate.queryForObject("SELECT mpa_id FROM mpa WHERE mpa_id = ?", Long.class, id);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     private final RowMapper<Mpa> mpaRowMapper = (recordSet, rowNumber) -> Mpa.builder()
-            .id(recordSet.getInt("rating_id"))
+            .id(recordSet.getInt("mpa_id"))
             .name(recordSet.getString("name"))
             .build();
 

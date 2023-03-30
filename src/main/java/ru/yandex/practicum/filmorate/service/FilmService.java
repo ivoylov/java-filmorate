@@ -20,12 +20,10 @@ public class FilmService {
 
     private static final Logger logger = LoggerFactory.getLogger(FilmService.class);
     private final InDbFilmStorage filmStorage;
-    private final InDbGenreStorage genreStorage;
 
     @Autowired
-    public FilmService(InDbFilmStorage filmStorage, InDbGenreStorage genreStorage) {
+    public FilmService(InDbFilmStorage filmStorage) {
         this.filmStorage = filmStorage;
-        this.genreStorage = genreStorage;
     }
 
     public Film add(Film film) {
@@ -55,6 +53,10 @@ public class FilmService {
     }
 
     public Film getById(long id) {
+        if (!filmStorage.isExist(id)) {
+            logger.info("film c id " + id + " отсутствует в списке");
+            throw new FilmUnknownException();
+        }
         return filmStorage.find(id);
     }
 
@@ -71,10 +73,6 @@ public class FilmService {
                 .stream()
                 .limit(top)
                 .collect(Collectors.toList());
-    }
-
-    public List<Genre> getAllGenres() {
-        return genreStorage.findAll();
     }
 
     public boolean isValid(Film film) {
