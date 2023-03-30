@@ -24,7 +24,7 @@ public class GenreController {
         this.genreService = genreService;
     }
 
-    @GetMapping("/genres")
+    @GetMapping
     public ArrayList<Genre> getAllGenres() {
         return new ArrayList<>(genreService.getAll());
     }
