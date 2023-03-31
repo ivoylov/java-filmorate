@@ -14,7 +14,7 @@ public class Film {
     public static final int MAX_LENGTH_FILM_DESCRIPTION = 200;
     public static final LocalDate MINIMAL_RELEASE_DATE = LocalDate.of(1895, 12, 28);
 
-    public Film(Long id, String name, String description, LocalDate releaseDate, Long duration, Mpa mpa, List<Genre> genre, List<Long> likes) {
+    public Film(Long id, String name, String description, LocalDate releaseDate, Long duration, Mpa mpa, List<Genre> genre) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -22,7 +22,6 @@ public class Film {
         this.duration = duration;
         this.mpa = mpa;
         this.genres = genre;
-        this.likes = likes;
     }
 
     private Long id;
@@ -36,15 +35,5 @@ public class Film {
     @NotNull
     private Mpa mpa;
     private List<Genre> genres;
-    private List<Long> likes;
-
-    public void addLike(Long userId) {
-        //likes.add(userId);
-    }
-
-    public void deleteLike(Long userId) {
-        //likes.remove(userId);
-    }
-
 
 }

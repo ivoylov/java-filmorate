@@ -33,11 +33,19 @@ public class InDbGenreStorage implements Storage<Genre> {
         return jdbcTemplate.queryForObject("SELECT * FROM genre WHERE genre_id = ?", genreRowMapper, id);
     }
 
-    public ArrayList<Genre> findAll(long id) {
-        if (id < 1) {
+    public ArrayList<Genre> findAllFilmGenres(long filmId) {
+        if (filmId < 1) {
             return new ArrayList<>();
         }
-        return new ArrayList<>(List.of(jdbcTemplate.queryForObject("SELECT * FROM genre WHERE genre_id = ?", genreRowMapper, id)));
+        ArrayList<Genre> filmGenres = new ArrayList<>();
+        ArrayList<Integer> genresId = new ArrayList<>(jdbcTemplate.query(
+                "SELECT * FROM film_genre WHERE film_id = ?",
+                genreIdRowMapper,
+                filmId));
+        for (int genreId : genresId) {
+            filmGenres.add(find(genreId));
+        }
+        return filmGenres;
     }
 
     @Override
@@ -64,5 +72,7 @@ public class InDbGenreStorage implements Storage<Genre> {
             .id(recordSet.getInt("genre_id"))
             .name(recordSet.getString("name"))
             .build();
+
+    private final RowMapper<Integer> genreIdRowMapper = (recordSet, rowNumber) -> recordSet.getInt("genre_id");
 
 }

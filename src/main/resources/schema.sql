@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS film (
     description varchar,
     release_date date,
     duration bigint,
-    genre_id int,
     mpa_id int
 );
 
@@ -26,6 +25,11 @@ CREATE TABLE IF NOT EXISTS genre (
     name varchar
 );
 
+CREATE TABLE IF NOT EXISTS film_genre (
+    genre_id int,
+    film_id int
+);
+
 CREATE TABLE IF NOT EXISTS likes (
     film_id bigint,
     user_id bigint
@@ -37,7 +41,7 @@ CREATE TABLE IF NOT EXISTS relationship_status (
 );
 
 CREATE TABLE IF NOT EXISTS relationship (
-    relation_it bigint AUTO_INCREMENT PRIMARY KEY,
+    relation_id bigint AUTO_INCREMENT PRIMARY KEY,
     user_id bigint,
     friend_id bigint,
     status_id int

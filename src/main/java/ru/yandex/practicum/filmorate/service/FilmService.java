@@ -9,9 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import ru.yandex.practicum.filmorate.storage.film.InDbFilmStorage;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
@@ -29,6 +27,9 @@ public class FilmService {
             logger.info(film + " не прошёл валидацию");
             throw new FilmValidationException();
         }
+        if (film.getGenres() == null) {
+            film.setGenres(new ArrayList<>());
+        }
         logger.info(film + " добавлен");
         return filmStorage.create(film);
     }
@@ -41,6 +42,9 @@ public class FilmService {
         if (!filmStorage.isExist(film.getId())) {
             logger.info(film + " отсутствует в списке");
             throw new FilmUnknownException();
+        }
+        if (film.getGenres() == null) {
+            film.setGenres(new ArrayList<>());
         }
         logger.info(film + " обновлён");
         return filmStorage.update(film);

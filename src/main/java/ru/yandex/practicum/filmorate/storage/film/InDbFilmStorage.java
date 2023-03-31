@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.storage.Storage;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,17 @@ public class InDbFilmStorage implements Storage<Film> {
                 film.getReleaseDate(),
                 film.getDuration(),
                 film.getMpa().getId());
-        film.setId(getIdByName(film.getName()));
+        film.setId(getIdByFilmDescriptions(film.getName(), film.getDescription()));
+        createFilmGenresInDb(film.getId(), film.getGenres());
         return film;
+    }
+
+    private void createFilmGenresInDb(Long filmId, List<Genre> genres) {
+        for (Genre genre : genres) {
+            String query = "INSERT INTO film_genre (film_id, genre_id) " +
+                    "VALUES (?,?)";
+            jdbcTemplate.update(query, filmId, genre.getId());
+        }
     }
 
     @Override
@@ -52,8 +62,15 @@ public class InDbFilmStorage implements Storage<Film> {
                 film.getDuration(),
                 film.getMpa().getId(),
                 film.getId());
+        updateFilmGenresInDB(film.getGenres(), film.getId());
         return film;
     }
+
+    private void updateFilmGenresInDB(List<Genre> genres, long filmId) {
+        //TODO
+    }
+
+
 
     @Override
     public Film find(long id) {
@@ -88,11 +105,16 @@ public class InDbFilmStorage implements Storage<Film> {
             .releaseDate(recordSet.getDate("release_date").toLocalDate())
             .duration(recordSet.getLong("duration"))
             .mpa(inDbMpaStorage.find(recordSet.getInt("mpa_id")))
-            .genres(inDbGenreStorage.findAll(recordSet.getInt("genre_id")))
+            .genres(inDbGenreStorage.findAllFilmGenres(recordSet.getLong("film_id")))
             .build();
 
-    private Long getIdByName(String name) {
-        return jdbcTemplate.queryForObject("SELECT FILM_ID FROM FILM WHERE name = ?", Long.class, name);
+    private Long getIdByFilmDescriptions(String name, String description) {
+        return jdbcTemplate.queryForObject(
+                "SELECT FILM_ID " +
+                "FROM FILM " +
+                "WHERE (name = ? AND description = ?)",
+                Long.class, 
+                name, description);
     }
 
     public void addLike(long filmId, long userId) {
@@ -121,7 +143,5 @@ public class InDbFilmStorage implements Storage<Film> {
         }
         return likes;
     }
-
-    private final RowMapper<Long> longRowMapper = (recordSet, rowNumber) -> (recordSet.getLong("film_id"));
 
 }
