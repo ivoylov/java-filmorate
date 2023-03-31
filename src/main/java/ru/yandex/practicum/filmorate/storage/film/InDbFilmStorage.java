@@ -8,7 +8,9 @@ import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.storage.Storage;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @AllArgsConstructor
@@ -39,7 +41,8 @@ public class InDbFilmStorage implements Storage<Film> {
     }
 
     private void createFilmGenresInDb(Long filmId, List<Genre> genres) {
-        for (Genre genre : genres) {
+        Set<Genre> uniqueGenre = new HashSet<>(genres);
+        for (Genre genre : uniqueGenre) {
             String query = "INSERT INTO film_genre (film_id, genre_id) " +
                     "VALUES (?,?)";
             jdbcTemplate.update(query, filmId, genre.getId());
@@ -67,10 +70,20 @@ public class InDbFilmStorage implements Storage<Film> {
     }
 
     private void updateFilmGenresInDB(List<Genre> genres, long filmId) {
-        //TODO
+        if (genres.size() > 0) {
+            try {
+                String check = "SELECT * FROM film_genre WHERE film_id = ?";
+                int row = jdbcTemplate.update(check, filmId);
+                if (row > 0) {
+                    String deleteQuery = "DELETE FROM film_genre WHERE film_id = ?";
+                    jdbcTemplate.update(deleteQuery, filmId);
+                }
+            } catch (Exception e) {
+
+            }
+            createFilmGenresInDb(filmId, genres);
+        }
     }
-
-
 
     @Override
     public Film find(long id) {
