@@ -14,16 +14,17 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.model.film.Film;
-import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.InDbFilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InDbGenreStorage;
 import ru.yandex.practicum.filmorate.storage.film.InDbMpaStorage;
 import ru.yandex.practicum.filmorate.storage.user.InDbUserStorage;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -45,6 +46,8 @@ class FilmorateApplicationTests {
 				.build();
 		jdbcTemplate = new JdbcTemplate(embeddedDatabase);
 		userStorage = new InDbUserStorage(jdbcTemplate);
+        inDbMpaStorage = new InDbMpaStorage(jdbcTemplate);
+        inDbGenreStorage = new InDbGenreStorage(jdbcTemplate);
         filmStorage = new InDbFilmStorage(jdbcTemplate, inDbMpaStorage, inDbGenreStorage);
         addUsersToDb();
         addFilmsToDb();
@@ -127,7 +130,7 @@ class FilmorateApplicationTests {
         userStorage.create(user1);
         User user2 = User.builder()
                 .birthday(LocalDate.of(1988,8,16))
-                .login("login")
+                .login("anotherLogin")
                 .name("anotherName")
                 .email("email@mail.ru")
                 .build();
@@ -136,21 +139,23 @@ class FilmorateApplicationTests {
 
     private static void addFilmsToDb() {
         Film film1 = Film.builder()
-                .name("name1")
-                .description("description1")
+                .id(1L)
+                .name("name")
+                .description("description")
+                .releaseDate(LocalDate.of(1999,01,01))
                 .duration(120L)
-                .releaseDate(LocalDate.of(2000,1,1))
-                .mpa(Mpa.builder().id(1).build())
-                .genres(List.of(Genre.builder().id(1).build()))
+                .mpa(Mpa.builder().id(1).name("G").build())
+                .genres(new ArrayList<>())
                 .build();
         filmStorage.create(film1);
         Film film2 = Film.builder()
-                .name("name2")
-                .description("description2")
+                .id(1L)
+                .name("another name")
+                .description("another description")
+                .releaseDate(LocalDate.of(1999,01,02))
                 .duration(120L)
-                .releaseDate(LocalDate.of(2000,1,1))
-                .mpa(Mpa.builder().id(1).build())
-                .genres(List.of(Genre.builder().id(1).build()))
+                .mpa(Mpa.builder().id(1).name("G").build())
+                .genres(new ArrayList<>())
                 .build();
         filmStorage.create(film2);
     }
