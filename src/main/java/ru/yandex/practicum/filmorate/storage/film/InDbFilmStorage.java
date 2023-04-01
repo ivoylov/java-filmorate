@@ -129,7 +129,7 @@ public class InDbFilmStorage implements Storage<Film> {
                 "SELECT FILM_ID " +
                 "FROM FILM " +
                 "WHERE (name = ? AND description = ?)",
-                Long.class, 
+                Long.class,
                 name, description);
     }
 
@@ -145,7 +145,7 @@ public class InDbFilmStorage implements Storage<Film> {
         jdbcTemplate.update(query, filmId, userId);
     }
 
-    public List<Film> getTopFilm (int top) {
+    public List<Film> getTopFilm(int top) {
         String likesQuery = "SELECT * FROM film " +
                 "WHERE film_id IN " +
                 "(SELECT film_id " +
