@@ -117,7 +117,7 @@ class FilmorateApplicationTests {
 		embeddedDatabase.shutdown();
 	}
 
-    private static void addUsersToDb () {
+    private static void addUsersToDb() {
         User user1 = User.builder()
                 .birthday(LocalDate.of(1988,8,16))
                 .login("login")
@@ -134,7 +134,7 @@ class FilmorateApplicationTests {
         userStorage.create(user2);
     }
 
-    private static void addFilmsToDb () {
+    private static void addFilmsToDb() {
         Film film1 = Film.builder()
                 .name("name1")
                 .description("description1")
