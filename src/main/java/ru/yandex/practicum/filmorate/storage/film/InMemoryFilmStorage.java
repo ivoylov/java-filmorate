@@ -4,15 +4,12 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import ru.yandex.practicum.filmorate.storage.Storage;
 
 @Component
 public class InMemoryFilmStorage implements Storage<Film> {
 
     private final HashMap<Long, Film> films = new HashMap<>();
-    private static final Logger logger = LoggerFactory.getLogger(InMemoryFilmStorage.class);
     private long idCounter = 0;
 
     @Override

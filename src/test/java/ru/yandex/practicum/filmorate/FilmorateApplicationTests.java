@@ -50,7 +50,7 @@ class FilmorateApplicationTests {
         addFilmsToDb();
 	}
 
-	@Test
+    @Test
 	public void testFindUserById() {
 		User user = userStorage.find(1);
 		assertThat(user).hasFieldOrPropertyWithValue("id", 1L);
