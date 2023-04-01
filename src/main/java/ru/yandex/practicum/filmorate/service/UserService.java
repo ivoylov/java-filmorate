@@ -19,7 +19,7 @@ public class UserService {
     private final InDbUserStorage userStorage;
 
     @Autowired
-    public UserService (InDbUserStorage userStorage) {
+    public UserService(InDbUserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
