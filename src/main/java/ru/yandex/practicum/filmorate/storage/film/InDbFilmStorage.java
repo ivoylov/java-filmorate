@@ -6,10 +6,13 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
+import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.Storage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 @Component
 @AllArgsConstructor
@@ -18,6 +21,7 @@ public class InDbFilmStorage implements Storage<Film> {
     private final JdbcTemplate jdbcTemplate;
     private InDbMpaStorage inDbMpaStorage;
     private InDbGenreStorage inDbGenreStorage;
+    private static final Logger logger = LoggerFactory.getLogger(FilmService.class);
 
     @Override
     public Film create(Film film) {
@@ -79,7 +83,9 @@ public class InDbFilmStorage implements Storage<Film> {
             String check = "SELECT * FROM film_genre WHERE film_id = ?";
             String deleteQuery = "DELETE FROM film_genre WHERE film_id = ?";
             jdbcTemplate.update(deleteQuery, filmId);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            logger.info("жанры фильма не обнаружены");
+        }
     }
 
     @Override
