@@ -21,10 +21,7 @@ import ru.yandex.practicum.filmorate.storage.film.InDbMpaStorage;
 import ru.yandex.practicum.filmorate.storage.user.InDbUserStorage;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
