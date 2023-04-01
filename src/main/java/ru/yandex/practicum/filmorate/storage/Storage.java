@@ -13,7 +13,6 @@ public interface Storage<T> {
     ArrayList<T> findAll();
 
     void delete(long id);
-    
     boolean isExist(long id);
 
 }
