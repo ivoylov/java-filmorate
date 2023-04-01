@@ -36,7 +36,9 @@ public class InDbMpaStorage implements Storage<Mpa> {
     }
 
     @Override
-    public void delete(long id) {}
+    public void delete(long id) {
+        
+    }
 
     @Override
     public boolean isExist(long id) {
