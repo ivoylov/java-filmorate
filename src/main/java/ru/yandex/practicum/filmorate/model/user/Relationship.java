@@ -8,7 +8,6 @@ public enum Relationship {
     CONFIRM(4);
 
     private final int statusId;
-    
     Relationship(int statusId) {
         this.statusId = statusId;
     }
