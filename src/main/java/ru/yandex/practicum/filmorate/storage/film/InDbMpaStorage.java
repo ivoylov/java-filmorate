@@ -37,7 +37,7 @@ public class InDbMpaStorage implements Storage<Mpa> {
 
     @Override
     public void delete(long id) {
-        
+
     }
 
     @Override
