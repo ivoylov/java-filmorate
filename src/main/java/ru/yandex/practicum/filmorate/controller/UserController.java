@@ -77,7 +77,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public ArrayList<User> getCommonFriends (@PathVariable long id, @PathVariable long otherId) {
+    public ArrayList<User> getCommonFriends(@PathVariable long id, @PathVariable long otherId) {
         if (!userService.isExist(id) || !userService.isExist(otherId)) {
             throw new UserUnknownException();
         }
