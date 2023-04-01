@@ -1,11 +1,11 @@
 package ru.yandex.practicum.filmorate.model.user;
 
 public enum Relationship {
-    NOT_EXIST (0),
+    NOT_EXIST(0),
     UNCONFIRMED(1),
     CONFIRM_BY_USER(2),
-    CONFIRM_BY_FRIEND (3),
-    CONFIRM (4);
+    CONFIRM_BY_FRIEND(3),
+    CONFIRM(4);
 
     private final int statusId;
     Relationship(int statusId) {
