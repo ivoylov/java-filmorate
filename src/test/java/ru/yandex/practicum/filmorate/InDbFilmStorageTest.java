@@ -3,8 +3,8 @@ package ru.yandex.practicum.filmorate;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,13 +12,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.InDbFilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InDbGenreStorage;
 import ru.yandex.practicum.filmorate.storage.film.InDbMpaStorage;
-import ru.yandex.practicum.filmorate.storage.user.InDbUserStorage;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,59 +24,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class FilmorateApplicationTests {
+public class InDbFilmStorageTest {
 
-	private static EmbeddedDatabase embeddedDatabase;
-	private static JdbcTemplate jdbcTemplate;
-	private static InDbUserStorage userStorage;
+    private static EmbeddedDatabase embeddedDatabase;
+    private static JdbcTemplate jdbcTemplate;
     private static InDbFilmStorage filmStorage;
     private static InDbMpaStorage inDbMpaStorage;
     private static InDbGenreStorage inDbGenreStorage;
 
-	@BeforeAll
-	public static void setUp() {
-		embeddedDatabase = new EmbeddedDatabaseBuilder()
-				.addDefaultScripts() // Добавляем скрипты schema.sql и data.sql
-				.setType(EmbeddedDatabaseType.H2)
-				.build();
-		jdbcTemplate = new JdbcTemplate(embeddedDatabase);
-		userStorage = new InDbUserStorage(jdbcTemplate);
+    @BeforeAll
+    public static void setUp() {
+        embeddedDatabase = new EmbeddedDatabaseBuilder()
+                .addDefaultScripts()
+                .setType(EmbeddedDatabaseType.H2)
+                .build();
+        jdbcTemplate = new JdbcTemplate(embeddedDatabase);
         inDbMpaStorage = new InDbMpaStorage(jdbcTemplate);
         inDbGenreStorage = new InDbGenreStorage(jdbcTemplate);
         filmStorage = new InDbFilmStorage(jdbcTemplate, inDbMpaStorage, inDbGenreStorage);
-        addUsersToDb();
         addFilmsToDb();
-	}
-
-    @Test
-	public void testFindUserById() {
-		User user = userStorage.find(1);
-		assertThat(user).hasFieldOrPropertyWithValue("id", 1L);
-	}
-
-    @Test
-    public void testUpdateUser() {
-        User user = userStorage.find(1);
-        user.setName("updatedName");
-        userStorage.update(user);
-        User user1 = userStorage.find(1);
-        assertThat(user1).hasFieldOrPropertyWithValue("name", "updatedName");
-    }
-
-    @Test
-    public void testFindAllUsers() {
-        Assertions.assertEquals(userStorage.findAll().size(), 2);
-    }
-
-    @Test
-    public void testDeleteUser() {
-        userStorage.delete(2);
-        Assertions.assertEquals(userStorage.findAll().size(), 1);
-    }
-
-    @Test
-    public void testIsExistUser() {
-        Assertions.assertTrue(userStorage.isExist(1));
     }
 
     @Test
@@ -112,26 +76,9 @@ class FilmorateApplicationTests {
         Assertions.assertTrue(filmStorage.isExist(1));
     }
 
-	@AfterAll
-	public static void tearDown() {
-		embeddedDatabase.shutdown();
-	}
-
-    private static void addUsersToDb() {
-        User user1 = User.builder()
-                .birthday(LocalDate.of(1988,8,16))
-                .login("login")
-                .name("name")
-                .email("email@mail.ru")
-                .build();
-        userStorage.create(user1);
-        User user2 = User.builder()
-                .birthday(LocalDate.of(1988,8,16))
-                .login("anotherLogin")
-                .name("anotherName")
-                .email("email@mail.ru")
-                .build();
-        userStorage.create(user2);
+    @AfterAll
+    public static void tearDown() {
+        embeddedDatabase.shutdown();
     }
 
     private static void addFilmsToDb() {
@@ -139,7 +86,7 @@ class FilmorateApplicationTests {
                 .id(1L)
                 .name("name")
                 .description("description")
-                .releaseDate(LocalDate.of(1999,01,01))
+                .releaseDate(LocalDate.of(1999,1,1))
                 .duration(120L)
                 .mpa(Mpa.builder().id(1).name("G").build())
                 .genres(new ArrayList<>())
@@ -149,7 +96,7 @@ class FilmorateApplicationTests {
                 .id(1L)
                 .name("another name")
                 .description("another description")
-                .releaseDate(LocalDate.of(1999,01,02))
+                .releaseDate(LocalDate.of(1999,1,2))
                 .duration(120L)
                 .mpa(Mpa.builder().id(1).name("G").build())
                 .genres(new ArrayList<>())
