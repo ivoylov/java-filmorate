@@ -80,7 +80,6 @@ public class InDbFilmStorage implements Storage<Film> {
 
     private void deleteFilmGenres(long filmId) {
         try {
-            String check = "SELECT * FROM film_genre WHERE film_id = ?";
             String deleteQuery = "DELETE FROM film_genre WHERE film_id = ?";
             jdbcTemplate.update(deleteQuery, filmId);
         } catch (Exception e) {
