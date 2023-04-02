@@ -9,3 +9,7 @@ INSERT INTO mpa (name) VALUES ('PG');
 INSERT INTO mpa (name) VALUES ('PG-13');
 INSERT INTO mpa (name) VALUES ('R');
 INSERT INTO mpa (name) VALUES ('NC-17');
+INSERT INTO relationship_status (name) VALUES ('UNCONFIRMED');
+INSERT INTO relationship_status (name) VALUES ('CONFIRM_BY_USER');
+INSERT INTO relationship_status (name) VALUES ('CONFIRM_BY_FRIEND');
+INSERT INTO relationship_status (name) VALUES ('CONFIRM');

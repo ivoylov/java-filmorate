@@ -179,7 +179,7 @@ public class InDbUserStorage implements Storage<User> {
                 "INTO relationship " +
                 "(user_id, friend_id, status_id) " +
                 "VALUES (?,?,?)";
-        jdbcTemplate.update(query, userId, friendId, relationship.getStatusId());
+        jdbcTemplate.update(query, userId, friendId, relationship.getId());
     }
 
     private void updateRelationship(long userId, long friendId, Relationship relationship) {
@@ -187,7 +187,7 @@ public class InDbUserStorage implements Storage<User> {
                 "SET " +
                 "status_id = ? " +
                 "WHERE (user_id = ? AND friend_id = ?)";
-        jdbcTemplate.update(query, relationship.getStatusId(), userId, friendId);
+        jdbcTemplate.update(query, relationship.getId(), userId, friendId);
     }
 
     public ArrayList<Long> findFriends(long userId) {
@@ -200,8 +200,8 @@ public class InDbUserStorage implements Storage<User> {
                                 "FROM relationship " +
                                 "WHERE friend_id = ? AND (status_id = ? OR status_id = ?)",
                         longRowMapper,
-                        userId, CONFIRM_BY_USER.getStatusId(), CONFIRM.getStatusId(),
-                        userId, CONFIRM_BY_FRIEND.getStatusId(), CONFIRM.getStatusId()));
+                        userId, CONFIRM_BY_USER.getId(), CONFIRM.getId(),
+                        userId, CONFIRM_BY_FRIEND.getId(), CONFIRM.getId()));
     }
 
     private final RowMapper<Long> longRowMapper = (recordSet, rowNumber) -> recordSet.getLong("friend_id");

@@ -13,7 +13,7 @@ public enum Relationship {
         this.statusId = statusId;
     }
 
-    public int getStatusId() {
+    public int getId() {
         return statusId;
     }
 

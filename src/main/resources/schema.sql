@@ -37,8 +37,6 @@ CREATE TABLE IF NOT EXISTS film_genre (
     foreign key (genre_id) references genre(genre_id)
 );
 
-
-
 CREATE TABLE IF NOT EXISTS relationship_status (
     status_id int AUTO_INCREMENT PRIMARY KEY,
     name varchar
@@ -49,10 +47,8 @@ CREATE TABLE IF NOT EXISTS relationship (
     user_id bigint,
     friend_id bigint,
     status_id int,
+    foreign key (status_id) references relationship_status(status_id),
     foreign key (user_id) references filmorate_user(user_id),
-    foreign key (friend_id) references filmorate_user(user_id),
-    foreign key (status_id) references relationship_status (status_id)
+    foreign key (friend_id) references filmorate_user (user_id)
 );
-
-
 
