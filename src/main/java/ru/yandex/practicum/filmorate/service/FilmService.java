@@ -7,33 +7,34 @@ import ru.yandex.practicum.filmorate.exception.film.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InDbFilmStorage;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
 
     private static final Logger logger = LoggerFactory.getLogger(FilmService.class);
-    private final InMemoryFilmStorage filmStorage;
+    private final InDbFilmStorage filmStorage;
 
     @Autowired
-    public FilmService(InMemoryFilmStorage filmStorage) {
+    public FilmService(InDbFilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
-    public void add(Film film) {
+    public Film add(Film film) {
         if (!isValid(film)) {
             logger.info(film + " не прошёл валидацию");
             throw new FilmValidationException();
         }
-        filmStorage.create(film);
+        if (film.getGenres() == null) {
+            film.setGenres(new ArrayList<>());
+        }
         logger.info(film + " добавлен");
+        return filmStorage.create(film);
     }
 
-    public void update(Film film) {
+    public Film update(Film film) {
         if (!isValid(film)) {
             logger.info(film + " не прошёл валидацию");
             throw new FilmValidationException();
@@ -42,8 +43,11 @@ public class FilmService {
             logger.info(film + " отсутствует в списке");
             throw new FilmUnknownException();
         }
-        filmStorage.update(film);
+        if (film.getGenres() == null) {
+            film.setGenres(new ArrayList<>());
+        }
         logger.info(film + " обновлён");
+        return filmStorage.update(film);
     }
 
     public ArrayList<Film> getAll() {
@@ -51,22 +55,23 @@ public class FilmService {
     }
 
     public Film getById(long id) {
+        if (!filmStorage.isExist(id)) {
+            logger.info("film c id " + id + " отсутствует в списке");
+            throw new FilmUnknownException();
+        }
         return filmStorage.find(id);
     }
 
     public void addLike(long filmId, long userId) {
-        filmStorage.find(filmId).addLike(userId);
+        filmStorage.addLike(filmId, userId);
     }
 
     public void deleteLike(long filmId, long userId) {
-        filmStorage.find(filmId).deleteLike(userId);
+        filmStorage.deleteLike(filmId, userId);
     }
 
-    public List<Film> getTopFilms(long top) {
-        return sortedFilmsByLikesQuantity()
-                .stream()
-                .limit(top)
-                .collect(Collectors.toList());
+    public List<Film> getTopFilms(int top) {
+        return filmStorage.getTopFilm(top);
     }
 
     public boolean isValid(Film film) {
@@ -77,11 +82,5 @@ public class FilmService {
         return filmStorage.isExist(id);
     }
 
-    private List<Film> sortedFilmsByLikesQuantity() {
-        return filmStorage.findAll()
-                .stream()
-                .sorted(Comparator.comparingLong(f0 -> f0.getLikes().size()*-1))
-                .collect(Collectors.toList());
-    }
 
 }

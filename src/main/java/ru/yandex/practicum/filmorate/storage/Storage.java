@@ -4,11 +4,16 @@ import java.util.ArrayList;
 
 public interface Storage<T> {
 
-    void create(T t);
-    void update(T t);
+    T create(T t);
+
+    T update(T t);
+
     T find(long id);
+
     ArrayList<T> findAll();
+
     void delete(long id);
+
     boolean isExist(long id);
 
 }

@@ -21,7 +21,7 @@ public class FilmController {
     private final UserService userService;
 
     @Autowired
-    public FilmController (FilmService filmService, UserService userService) {
+    public FilmController(FilmService filmService, UserService userService) {
         this.filmService = filmService;
         this.userService = userService;
     }
@@ -31,8 +31,7 @@ public class FilmController {
         if (!filmService.isValid(film)) {
             throw new FilmValidationException();
         }
-        filmService.add(film);
-        return film;
+        return filmService.add(film);
     }
 
     @PutMapping
@@ -40,8 +39,7 @@ public class FilmController {
         if (!filmService.isExist(film.getId())) {
             throw new FilmUnknownException();
         }
-        filmService.update(film);
-        return film;
+        return filmService.update(film);
     }
 
     @GetMapping
